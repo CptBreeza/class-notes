@@ -806,4 +806,230 @@ $q_i = \delta(q_{i-1},a_i)$ for all $1 \leq i \leq n$ and \\
 $q_n \in F$.
 \end{definition}
 
+\section{DFA/NFA equivalence, Regular Language and Regular Expression}
+
+\subsection{Build a DFA out of an NFA by Grouping States} \label{subsec:5.1}
+
+Now it is time to show that every NFA can be turned into a DFA. Let us do this by first
+show an example. Consider an NFA $M$ as shown below:
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial,accepting]  (q0) {0};
+      \node[state,below right of=q0]  (q1) {1};
+      \node[state,below of=q0]        (q2) {2};
+
+      \draw (q0) edge[above]      node{a} (q1)
+            (q1) edge[loop,above] node{b} (q1)
+            (q1) edge[above]      node{b} (q2)
+            (q2) edge[left]       node{a} (q0);
+    \end{tikzpicture}
+    \caption{}
+    \label{fig:fig14}
+\end{figure}
+
+We will draw a table of all transitions of $M$. But this time we do it in a slightly
+different way. First, instead of $0$, we use $\{0\}$ as the initial state. Then, we
+figure out which set of states it transitions to under different inputs. For each
+set of states that is transitioned to, we use it as a starting point to continue
+chasing next sets of states. The table of transitions built in this new approach is
+shown below:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+set of states & $a$ & $b$ \\
+\hline
+$\{0\}$ & $\{1\}$ & $\emptyset$ \\
+\hline
+$\{1\}$ & $\emptyset$ & $\{1,2\}$ \\
+\hline
+$\{1,2\}$ & $\{0\}$ & $\{1,2\}$ \\
+\hline
+$\emptyset$ & $\emptyset$ & $\emptyset$ \\
+\hline
+\end{tabular}
+\caption{table of transitions of sets of states of $M$}
+\end{table}
+
+Look at this table, if we take these sets of states as states, the table would be
+describing a $\delta$ function of some DFA. Why not build a DFA by this? But before
+building the DFA, there are two more questions:
+\begin{enumerate}
+\item what is the initial state?
+\item what are the accept states?
+\end{enumerate}
+
+The answers to these questions are:
+\begin{enumerate}
+\item $\{q_0\}$ where $q_0$ is the initial state of the original NFA is the
+initial state of the new DFA. In this example, $\{0\}$.
+\item any state which has an accept state of the original NFA as its element
+is an accept state. In this example, again $\{0\}$.
+\end{enumerate}
+
+And finally we can build the DFA. The DFA is shown in figure \ref{fig:fig15}.
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial,accepting]  (q0) {$\{0\}$};
+      \node[state,right of=q0]        (q1) {$\{1\}$};
+      \node[state,right of=q1]        (q2) {$\{1,2\}$};
+      \node[state,above of=q1]        (q3) {$\emptyset$};
+
+      \draw (q0) edge[above]      node{a} (q1)
+            (q0) edge[left]      node{b} (q3)
+            (q1) edge[left]      node{a} (q3)
+            (q1) edge[above]      node{b} (q2)
+            (q2) edge[bend left,above]      node{a} (q0)
+            (q2) edge[loop,above] node{b} (q2)
+            (q3) edge[loop,above] node{a,b} (q3);
+    \end{tikzpicture}
+    \caption{}
+    \label{fig:fig15}
+\end{figure}
+
+\subsection{Build a DFA out of an NFA by Chasing Down $\epsilon$ Transitions}
+
+For simplicity, there are no $\epsilon$ transitions in the example in
+\ref{subsec:5.1}. It takes a little more effort to deal with them. And let us
+do it now. The figure below shows a slice of some NFA:
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial]  (q0) {0};
+      \node[state,accepting,right of=q0]        (q1) {1};
+      \node[state,right of=q1]        (q2) {2};
+      \node[state,right of=q2]        (q3) {3};
+
+      \draw (q0) edge[above]     node{$\epsilon$} (q1)
+            (q1) edge[above]     node{a} (q2)
+            (q2) edge[above]     node{$\epsilon$} (q3);
+    \end{tikzpicture}
+    \caption{}
+    \label{fig:fig16}
+\end{figure}
+
+It takes three steps to eliminate the $\epsilon$ transitions. First, we add a
+new transition to \emph{bypass} the $\epsilon$ transitions. The result is shown
+is figure \ref{fig:fig16}.
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial]  (q0) {0};
+      \node[state,accepting,right of=q0]        (q1) {1};
+      \node[state,right of=q1]        (q2) {2};
+      \node[state,right of=q2]        (q3) {3};
+
+      \draw (q0) edge[above]     node{$\epsilon$} (q1)
+            (q1) edge[above]     node{a} (q2)
+            (q2) edge[above]     node{$\epsilon$} (q3)
+            (q0) edge[bend left,above]     node{a} (q3);
+    \end{tikzpicture}
+    \caption{}
+    \label{fig:fig16}
+\end{figure}
+
+Then, if the $\epsilon$ transition points to an accept state, we need to turn
+the start state of the $\epsilon$ transition to an accept state. The result is
+shown in figure \ref{fig:fig17}.
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial,accepting]  (q0) {0};
+      \node[state,accepting,right of=q0]        (q1) {1};
+      \node[state,right of=q1]        (q2) {2};
+      \node[state,right of=q2]        (q3) {3};
+
+      \draw (q0) edge[above]     node{$\epsilon$} (q1)
+            (q1) edge[above]     node{a} (q2)
+            (q2) edge[above]     node{$\epsilon$} (q3)
+            (q0) edge[bend left,above]     node{a} (q3);
+    \end{tikzpicture}
+    \caption{}
+    \label{fig:fig17}
+\end{figure}
+
+Finally, we can remove $\epsilon$ transtions safely. The result is shown in
+figure \ref{fig:fig18}.
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial,accepting]  (q0) {0};
+      \node[state,accepting,right of=q0]        (q1) {1};
+      \node[state,right of=q1]        (q2) {2};
+      \node[state,right of=q2]        (q3) {3};
+
+      \draw (q1) edge[above]     node{a} (q2)
+            (q0) edge[bend left,above]     node{a} (q3);
+    \end{tikzpicture}
+    \caption{}
+    \label{fig:fig18}
+\end{figure}
+
+\subsection{Regular Language and Regular Expression}
+
+We have seen so much about machines. Now we turn to languages and see what
+languages associated with DFAs/NFAs are like.
+
+We define a class of languages, called \emph{regular language}:
+\begin{definition}
+Fix the alphabet $\Sigma$. A language, $L$, is a \emph{regular language},
+if either of the following is true:
+\begin{enumerate}
+\item $L = \emptyset$
+\item $L = \{\epsilon\}$
+\item $L = \{a\}$ where $a \in \Sigma$
+\item $L = L_1 \cup L_2$ where $L_1$ and $L_2$ are regular languages
+\item $L = L_1 \cdot L_2$ where $L_1$ and $L_2$ are regular languages
+\item $L = L_1^\ast$ where $L_1$ is a regular language
+\end{enumerate}
+\end{definition}
+
+It is easy to see, from the definition, that regular languages are closed
+under \emph{union}, \emph{concatenation} and \emph{Kleene star}. And the
+that we define it remind us of the ways to build new DFAs out of existing
+ones as discussed in previous sections. There is, indeed, a connection
+between regular languages and DFAs/NFAs. We will show this in next section.
+
+It is convenient to develop a notation for regular languages, which we
+call \emph{regular expressions}. We define them formally in definition
+\ref{def:def19}. The regular language which is denoted by a regular
+language $s$ is denoted by $L(s)$.
+
+After the formal definition of regular languages, we specify what regular
+language a regular expression \emph{matches}. Assume regular expression
+$s_1$ matches $L_1$ and $s_2$ matches $L_2$, then:
+\begin{enumerate}
+\item $L(\epsilon) = \emptyset$
+\item $L("\$\{a\}")$ = $\{a\}$
+\item $L("\epsilon")$ = $\{\epsilon\}$
+\item $L("(\$\{s_1\} \cup \$\{s_2\})") = L_1 \cup L_2$
+\item $L("(\$\{s_1\} \cdot \$\{s_2\})") = L_1 \cdot L_2$
+\item $L("(\$\{s_1\}^\ast)") = L_1 ^ \ast$
+\end{enumerate}
+
+\begin{definition} \label{def:def19}
+Fix the alphabet $\Sigma$. A string $s$ over the alphabet
+$\Sigma \cup \{\epsilon,(,),\cup,\cdot,\ast\}$ is a \emph{regular
+expression}, if either of the following is true:
+\begin{enumerate}
+\item $s = \epsilon$
+\item $s = "\$\{a\}"$ for some symbol $a$ in $\Sigma$
+\item $s = "\epsilon"$
+\item $s = "(\$\{s_1\} \cup \$\{s_2\})"$ where $s_1$ and $s_2$ are regular
+expressions
+\item $s = "(\$\{s_1\} \cdot \$\{s_2\})"$ where $s_1$ and $s_2$ are regular
+expressions
+\item $s = "(\$\{s_1\}^\ast)"$ where $s_1$ is a regular expressions
+\end{enumerate}
+\end{definition}
+
 \end{document}
