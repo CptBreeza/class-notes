@@ -214,7 +214,7 @@ For any state $q$ and string $s$, $\delta ^ \ast (q, s)$ is:
 
 Then, with this definition, we say that a DFA $M$ accepts a string $s$ iff $\delta ^ \ast(q_0, s) \in F$.
 
-\section{Building DFAs}
+\section{Building DFAs} \label{sec:3}
 
 \subsection{Example 1: Can We Build a Smaller DFA?} \label{subsec:3.1}
 
@@ -417,7 +417,7 @@ should be $\{q \in Q \mid q_1 \in F_1 \wedge q_2 \in F2\}$.
 There is another way to build this DFA by exploiting the \emph{De Morgan's Law}.
 That is $L_1 \cap L_2 = \overline{\overline{L_1} \cup \overline{L_2}}$.
 
-\section{Nondeterministic Finite Automata}
+\section{Nondeterministic Finite Automata} \label{sec:4}
 
 As shown in \ref{subsec:3.3}, given $L_1 = L(M_1)$ and $L_2 = L(M_2)$, there exists
 $M$ that accepts
@@ -932,7 +932,7 @@ is figure \ref{fig:fig16}.
             (q0) edge[bend left,above]     node{a} (q3);
     \end{tikzpicture}
     \caption{}
-    \label{fig:fig16}
+    \label{fig:fig17}
 \end{figure}
 
 Then, if the $\epsilon$ transition points to an accept state, we need to turn
@@ -953,11 +953,11 @@ shown in figure \ref{fig:fig17}.
             (q0) edge[bend left,above]     node{a} (q3);
     \end{tikzpicture}
     \caption{}
-    \label{fig:fig17}
+    \label{fig:fig18}
 \end{figure}
 
 Finally, we can remove $\epsilon$ transtions safely. The result is shown in
-figure \ref{fig:fig18}.
+figure \ref{fig:fig19}.
 
 \begin{figure}[ht]
     \centering
@@ -971,7 +971,7 @@ figure \ref{fig:fig18}.
             (q0) edge[bend left,above]     node{a} (q3);
     \end{tikzpicture}
     \caption{}
-    \label{fig:fig18}
+    \label{fig:fig19}
 \end{figure}
 
 \subsection{Regular Language and Regular Expression}
@@ -1031,5 +1031,216 @@ expressions
 \item $s = "(\$\{s_1\}^\ast)"$ where $s_1$ is a regular expressions
 \end{enumerate}
 \end{definition}
+
+\section{DFA/NFA - Regular Language Equivalence and a Technique to Minimize a DFA}
+
+We showed the equivalence between DFAs and NFAs. And we defined a class of
+languages which we call the regular languages. In this section, we are going
+to show the connection between DFAs/NFAs and regular languages. That is, the
+class of languages that DFAs/NFAs accepts is exactly regular languages. There
+is an equivalence between DFAs/NFAs and regular languages. We show it by
+working in two directions. First, we show that for every regular expression,
+we can build a DFA/NFA accepting exactly the regular language represented by
+it. Then, we show that for every DFA/NFA, we can derive a regular expression
+representing the language that it accepts.
+
+\subsection{Build a DFA/NFA from a Regular Expression}
+
+The easiest way to build a DFA/NFA from a regular expression is following
+the definition of regular expressions. The base cases are shown in figure
+\ref{fig:fig20} through figure \ref{fig:fig22}.
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (q0) {};
+    \end{tikzpicture}
+    \caption{$\emptyset$}
+    \label{fig:fig20}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial,accepting] (q0) {};
+    \end{tikzpicture}
+    \caption{$"\epsilon"$}
+    \label{fig:fig21}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (q0) {};
+      \node[state,accepting, right of=q0] (q1) {};
+
+      \draw (q0) edge[above] node{a} (q1);
+    \end{tikzpicture}
+    \caption{$"a"$}
+    \label{fig:fig22}
+\end{figure}
+
+For each inductive case in the definition of regular expressions, there is
+a corresponding construction of DFAs/NFAs which we discussed in detail in
+section \ref{sec:3} and section \ref{sec:4}. To be specific, in the case of
+$s = s_1 \cup s_2$, we use the \emph{product construction} to combine two
+DFAs together. In the case of $s = s_1 \cdot s_2$, first we wire up $M_1$
+and $M_2$ in the way that there are $\epsilon$ transitions connecting the
+accept states of $M_1$ and the initial state of $M_2$, then we turn the
+accept states of $M_1$ to nonaccept states. In the case of $s^\ast$, first
+we add a new state and make it the initial state and a accept state, add
+an $\epsilon$ transition from the new initial state to the original initial
+state, and add $\epsilon$ transitions from the original accept states to
+the original initial state.
+
+\subsection{Derive a Regular Expression from an NFA}
+
+To derive a regular expression from an NFA, we eliminates states from it.
+
+First, we add a new initial state and a $\epsilon$ transition from it to
+the original initial state.
+
+Then, we add an accept state and $\epsilon$ transitions from the original
+accept states to it. And we turn the original accept states to nonaccept
+states.
+
+After that, we pick a state from the original NFA and look at all paths
+through it. A path should look like that shown below:
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (q0) {$q_0$};
+      \node[state,right of=q0] (q1) {$q_1$};
+      \node[state,right of=q1] (q2) {$q_2$};
+
+      \draw (q0) edge[above] node{a} (q1)
+            (q1) edge[loop,above] node{b} (q2)
+            (q1) edge[above] node{c} (q2);
+    \end{tikzpicture}
+    \caption{a typical path through $q_1$}
+    \label{fig:fig23}
+\end{figure}
+
+For this path, to eliminate $q_1$, we add a new transition from $q_0$ to
+$q_2$, labelled by $a \cdot b^\ast c$, and remove the original transition
+from $q_0$ to $q_1$ and that from $q_1$ to $q_2$. The resultant figure is
+shown below:
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (q0) {$q_0$};
+      \node[state, right of=q0] (q1) {$q_1$};
+      \node[state, right of=q1] (q2) {$q_2$};
+
+      \draw (q0) edge[bend left,above] node{$a \cdot b^\ast c$} (q2);
+    \end{tikzpicture}
+    \caption{figure \ref{fig:fig23} after setting up the new transition}
+    \label{fig:fig24}
+\end{figure}
+
+It should be noted that this is just one of the paths through $q_1$.
+Generally, there could be many paths through $q_1$. We need to set up a
+transition like this for each path. After removing original transitions
+for every path, we can safely eliminate $q_1$. This process might end up
+with a situation where there are two or more outgoing transitions from a
+state, to one another state. An example is shown in figure \ref{fig:fig25}.
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (q0) {$q_0$};
+      \node[state, right of=q0] (q2) {$q_2$};
+
+      \draw (q0) edge[bend left,above] node{$s_1$} (q2)
+            (q0) edge[bend right,below] node{$s_2$} (q2);
+    \end{tikzpicture}
+    \caption{a situation where there are two transitions from $q_0$ to $q_2$}
+    \label{fig:fig25}
+\end{figure}
+
+In this case, we combine those outgoing transitions to a new transition
+labeled by $"\$\{s_1\}\cup\$\{s_2\}"$.
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (q0) {$q_0$};
+      \node[state, right of=q0,xshift=1cm] (q2) {$q_2$};
+
+      \draw (q0) edge[above] node{$"\$\{s_1\}\cup\$\{s_2\}"$} (q2);
+    \end{tikzpicture}
+    \caption{figure \ref{fig:fig25} after combining transitions}
+    \label{fig:fig26}
+\end{figure}
+
+The new machine produced by the method shown above is no longer a DFA
+or NFA, since the transitions are now labeled by regular expressions
+instead of symbols drawn from the alphabet. We call it a \emph{generalized
+nondeterministic finite automaton}. As we can imagine, after all original
+states are eliminated, there would be two states and a transition between
+them left. The label of the transition is the regular expression
+representing the language which the original DFA/NFA accepts.
+
+\subsection{A Technique to Minimize a DFA}
+
+To minimize a DFA, we find \emph{equivalent states} and combine them.
+What does it mean for states to be equivalent? For a DFA $M$, imagine
+two states $q_0$ and $q_1$ of it. If $\delta(q_0, x) = \delta(q_1, x)$
+holds for any string $x$, it makes no difference whether $M$ is in $q_0$
+or $q_1$. So we can eliminate one of them and migrate all its ingoing
+transitions to the other one.
+
+This is better explained in an example. Consider the DFA shown below:
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (q0) {$q_0$};
+      \node[state,right of=q0] (q2) {$q_2$};
+      \node[state,accepting,below of=q2] (q1) {$q_1$};
+      \node[state,right of=q2] (q3) {$q_3$};
+
+      \draw (q0) edge[above] node{$0$} (q2)
+            (q2) edge[loop,above] node{$0$} (q2)
+            (q2) edge[bend left,above] node{$1$} (q3)
+            (q3) edge[bend left,above] node{$0$} (q2)
+            (q3) edge[bend left,above] node{$1$} (q1)
+            (q1) edge[loop,above] node{$0,1$} (q1)
+            (q1) edge[bend left,above] node{$1$} (q0);
+    \end{tikzpicture}
+    \caption{figure \ref{fig:fig25} after combining transitions}
+    \label{fig:fig27}
+\end{figure}
+
+Which states should be considered equivalent? $q_1$ is not equivalent
+to any other states since it is an accept state. $q_0$ is not
+equivalent to $q_2$ because input $1$ takes $q_0$ to $q_2$ but takes
+$q_2$ to $q_3$. $q_2$ is not equivalent to $q_3$ because input $1$
+takes $q_2$ to $q_3$ but takes $q_3$ to $q_1$. $q_0$ is equivalent to
+$q_3$ because both inputs $0$ and $1$ take them to the same states.
+We decide to eliminate $q_3$. To do so, first we migrate all its
+ingoing transitions to $q_0$. There is one ingoing transition from $q_2$.
+So we add a new transition from $q_2$ to $q_0$ labeled by $1$. And we
+remove $q_3$ together with all transitions associated with it. This
+yields the DFA shown below:
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (q0) {$q_0$};
+      \node[state,right of=q0] (q2) {$q_2$};
+      \node[state,accepting,below of=q2] (q1) {$q_1$};
+
+      \draw (q0) edge[bend left,above] node{$0$} (q2)
+            (q2) edge[loop,above] node{$0$} (q2)
+            (q2) edge[bend left,above] node{$1$} (q0)
+            (q1) edge[loop,above] node{$0,1$} (q1)
+            (q1) edge[bend left,above] node{$1$} (q0);
+    \end{tikzpicture}
+    \caption{minimized version of figure \ref{fig:fig27}}
+    \label{fig:fig28}
+\end{figure}
 
 \end{document}
