@@ -11,6 +11,7 @@
   initial text=$ $,
 }
 \usepackage{ulem}
+\usepackage{pgf-pie}
 
 \title{ECS 120: Theory of Computation}
 \author{CptBreeza}
@@ -1183,7 +1184,7 @@ states are eliminated, there would be two states and a transition between
 them left. The label of the transition is the regular expression
 representing the language which the original DFA/NFA accepts.
 
-\subsection{A Technique to Minimize a DFA}
+\subsection{A Technique to Minimize a DFA} \label{subsec:6.3}
 
 To minimize a DFA, we find \emph{equivalent states} and combine them.
 What does it mean for states to be equivalent? For a DFA $M$, imagine
@@ -1242,5 +1243,150 @@ yields the DFA shown below:
     \caption{minimized version of figure \ref{fig:fig27}}
     \label{fig:fig28}
 \end{figure}
+
+\section{Two Theorems about Regular Languages}
+
+In this section, we will introduce two theorems about regular languages.
+Both of them can be used to proof the (ir)regularity of a language.
+
+\subsection{Myhill-Nerode Theorem}
+
+$\Sigma^\ast$ can be partitioned into two \emph{equivalence classes} by
+a DFA $M$, namely a class of strings accepted by $M$ and a class of
+those not. With $M$, assuming $|Q_M| = n$, $\Sigma^\ast$ can also be
+partitioned into $n$ classes, by the final states reached after the string
+is fed into $M$. Obviously, the latter partition is a refinement of the
+first one. The big $L(M)$ class in the first partition is the union of
+all classes of the second one where the state is an accept state.
+
+Now we suggest a partition that is finer than the first one while coarser
+than the second one. Recall from \ref{subsec:6.3} that we have defined a
+equivalence relation upon strings. We give a formal definition here:
+
+\begin{definition} \label{def:def20}
+Fix the alphabet $\Sigma$, two strings $x$ and $y$ are said to be
+\emph{indistinguishable with respect to $L$}, which we denote $x \equiv_L y$,
+if for every $z \in \Sigma ^\ast$, $xz \in L$ if and only if $yz \in L$.
+\end{definition}
+
+For a DFA $M$, what the definition \ref{def:def20} says is basically that
+for any two strings $x$ and $y$, $x \equiv_{L_M} y$ if and only if we feed
+them into $M$ respectively and then feed any string $z$, either both or none
+of them reach accept states. And two states $q_1$ and $q_2$ can be considered
+equivalent in the same manner that, if fed with any string $z$, both or none
+of them transition to accept states.
+
+For example, consider the language $\{s \in \Sigma^\ast \mid \text{s ends
+with "bbb"}\}$. For this language, "b" and "bb" are not equivalent, since
+after appending $z =$ "b" to them, the first reaches a nonaccept state
+and the second reaches an accept state. "abb" and "abbabb" are equivalent.
+
+The new partition we want to establish is that of classes of equivalent
+strings with respect to $L(M)$. It is finer than the first partition,
+because all nonaccepted strings belong to one single class in the first
+partition, but may belong to several classes in the new partition. It is
+coarser than the second partition, in which every class corresponds to a
+state of $M$, whereas in the new partition the equivalent states are
+combined. An example of three partitions is shown below in figure
+\ref{fig:fig29}.
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+  \pie[text=inside,hide number,radius=2]{30/$L(M)$, 70/}
+  \pie[text=inside,hide number,radius=2,pos={6,0}]{10/$q_0$, 20/$q_1$, 30/$q_2$, 40/$q_3$}
+  \pie[text=inside,hide number,radius=2,pos={12,0}]{30/$[x]$, 30/$[y]$, 40/$[z]$}
+\end{tikzpicture}
+\caption{(left) a partition of $\Sigma^\ast$ by a DFA $M$; (middle) a
+partition of $\Sigma^\ast$ by the states of $M$; (right)` a partition of
+$\Sigma^\ast$ by equivalence classes with respect to $L$.}
+\label{fig:fig29}
+\end{figure}
+
+For a DFA acceptable language, namely a regular language, $\Sigma^\ast$
+must be able to be partitioned into a finite number of classes with
+respect to $\equiv_L$. The number of the classes is at most $|Q_M|$.
+For a language $L$, if $\Sigma^\ast$ can be partitioned into infinitely
+many classes with respect to $\equiv_M$, it does not seem to be
+acceptable by a DFA.
+
+\begin{theorem}[Myhill-Nerode Theorem]
+Fix the alphebet $\Sigma$. For a language $L$, if $\Sigma^\ast$ has
+infinitely many equivalence classes with respect to $\equiv_L$, then
+$L$ is not regular. Otherwise, $L$ is regular and is accepted by a
+DFA $M$ where $|Q_M|$ is equal to the number of equivalence classes.
+\end{theorem}
+
+\begin{proof}
+If $\Sigma^\ast$ has infinitely many equivalence classes with respect to
+$L$, we draw a string from each of the classes. For any pair $(x,y)$ of
+them, $x \equiv_L y$ does not hold, that is to say we need a distinct
+state for them. That need infinitely many states in a DFA. Thus
+impossible.
+\end{proof}
+
+For example, consider the language $L = \{a^nb^n \mid n \in \mathbb{N}\}$.
+For $L$, all strings $a^n$ where $n \in \mathbb{N}$ is distinguishable
+pairwisely. That is to say that there are infinitely many equivalence
+classes respect to $\equiv_L$, so $L$ is not a regular language.
+
+\subsection{Pumping Lemma}
+
+Since there are finite states in a DFA, by the Pigeonhole Principle, if
+fed with a sufficiently large string, there must be a state that is
+visited twice. For a state to be visited twice, as we can imagine, there
+must be a \emph{loop} containing the state.
+
+Figure \ref{fig:fig30} shows an illustration of this situation. A long
+string, with some prefix $x$, enters the loop and then goes through some
+suffix and finally gets accepted.
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (q0) {$q_0$};
+      \node[state,right of=q0] (q1) {$q_1$};
+      \node[state,accepting,right of=q2] (q2) {$q_2$};
+
+      \draw (q0) edge[above] node{$x$} (q1)
+            (q1) edge[loop,above] node{$y$} (q1)
+            (q1) edge[above] node{$z$} (q2);
+    \end{tikzpicture}
+    \caption{minimized version of figure \ref{fig:fig27}}
+    \label{fig:fig30}
+\end{figure}
+
+The interesting part is that as there is this loop yielding "y", it can
+yield more or less (to $0$ times of "y" which is $\epsilon$) of "y"s, and
+the new strings are still accepted by $M$. This phenomena is stated
+formally in the following theorem:
+\begin{theorem}[Pumping Lemma]
+Let $L$ be a regular language. Then there exists a number $p$ such that \\
+$\forall s \in L$, $|s| \geq p$, \\
+\indent $\exists xyz$, $s = xyz$, $|y| > 1$, \\
+\indent\indent $\forall i \geq 0$, $xy^iz \in L$.
+\end{theorem}
+
+For example, consider the language $L = \{a^nb^n \mid n \in \mathbb{N}\}$.
+Assume $L$ is a regular language. For a number $p$ guaranteed by the Pumping
+Lemma, consider a string $a^pb^p$. There must be a nonempty substring $y$ in
+it, where we can pump it up or down and the resultant strings are still in
+$L$. There are three possible cases:
+\begin{enumerate}
+\item $y = a^i$ where $i \leq p$.
+\item $y = a^ib^j$ where $i, j \leq p$
+\item $y = b^j$ where $j \leq p$
+\end{enumerate}
+
+In any of these cases, either we pump up or pump down $y$ would cause a
+mismatch between the count of "a"s and the count of "b"s in the resultant
+string. This contradicts with Pumping Lemma. Thus $L$ is not a regular
+language.
+
+Actually, Pumping Lemma gives us a tighter condition about where $y$ could
+be located within the string. In the example above, we are working on a
+string $a^pb^p$ whose length is twice as the $p$ guaranteed by Pumping
+Lemma. There must be \emph{a} $y$ within the first $p$ characters. And we
+could just drop the last two cases and the analysis would be simpler.
 
 \end{document}
