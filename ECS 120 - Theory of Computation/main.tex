@@ -12,6 +12,8 @@
 }
 \usepackage{ulem}
 \usepackage{pgf-pie}
+\usepackage{qtree}
+\usepackage{mathtools}
 
 \title{ECS 120: Theory of Computation}
 \author{CptBreeza}
@@ -1055,6 +1057,8 @@ the definition of regular expressions. The base cases are shown in figure
     \centering
     \begin{tikzpicture}
       \node[state,initial] (q0) {};
+
+      \draw (q0) edge[loop,above] node{any character} (q0);
     \end{tikzpicture}
     \caption{$\emptyset$}
     \label{fig:fig20}
@@ -1064,6 +1068,10 @@ the definition of regular expressions. The base cases are shown in figure
     \centering
     \begin{tikzpicture}
       \node[state,initial,accepting] (q0) {};
+      \node[state,right of=q0,xshift=2cm] (q1) {};
+
+      \draw (q0) edge[above] node{any character} (q1)
+            (q1) edge[loop,above] node{any character} (q1);
     \end{tikzpicture}
     \caption{$"\epsilon"$}
     \label{fig:fig21}
@@ -1073,9 +1081,13 @@ the definition of regular expressions. The base cases are shown in figure
     \centering
     \begin{tikzpicture}
       \node[state,initial] (q0) {};
-      \node[state,accepting, right of=q0] (q1) {};
+      \node[state,accepting,right of=q0] (q1) {};
+      \node[state,right of=q1,xshift=2cm] (q2) {};
 
-      \draw (q0) edge[above] node{a} (q1);
+      \draw (q0) edge[above] node{$a$} (q1)
+            (q1) edge[above] node{any character} (q2)
+            (q2) edge[loop,above] node{any character} (q2)
+            (q0) edge[bend right,above] node{any character but $a$} (q2);
     \end{tikzpicture}
     \caption{$"a"$}
     \label{fig:fig22}
@@ -1388,5 +1400,257 @@ be located within the string. In the example above, we are working on a
 string $a^pb^p$ whose length is twice as the $p$ guaranteed by Pumping
 Lemma. There must be \emph{a} $y$ within the first $p$ characters. And we
 could just drop the last two cases and the analysis would be simpler.
+
+\section{Context Free Grammar}
+
+Let us move on to another system to specify a language. We show an example
+here:
+\begin{align*}
+&S \rightarrow aSb \\
+&S \rightarrow \epsilon
+\end{align*}
+
+These two lines form a \emph{rule}, and each of the lines is called a
+production. The capital letter $S$ denotes a \emph{variable}. The lowercase
+letters denote \emph{terminals}. Only variables can appear on the left hand
+side of the equation.
+
+One possible process this rule can generate a string is shown below. This
+line is also called a \emph{derivation}.
+
+\begin{equation*}
+\centering
+S \rightarrow aSb \rightarrow aaSbb \rightarrow aa \epsilon bb \rightarrow aabb
+\end{equation*}
+
+To derive a string from a rule, we start from the \emph{starting point},
+usually denoted by the variable $S$. Then we pick a production where $S$ appears
+on the left hand side, substitute $S$ with the right hand side of the
+production. We can repeat this substitution indefinitely until there is no
+nonterminals left. Then we get a string from it.
+
+The example above represents the language $\{a^nb^n \mid n \in \mathbb{N}\}$.
+This language was proven nonregular by us in many ways. We are now entering
+the new realm of nonregular languages.
+
+\section{Context Free Grammar. Cont}
+
+\subsection{Derivation, Parse Tree and Ambiguity}
+
+Consider the example:
+
+\begin{align*}
+&S \rightarrow aAbB \\
+&A \rightarrow \epsilon | aA \\
+&B \rightarrow \epsilon | bB
+\end{align*}
+
+There are two ways to derive the string $aabb$ from these rules:
+
+\begin{enumerate}
+\item $S \rightarrow aAbB \rightarrow aaAbB \rightarrow aabB \rightarrow aabbB \rightarrow aabb$
+\item $S \rightarrow aAbB \rightarrow aAbbB \rightarrow aAbb \rightarrow aaAbb \rightarrow aabb$
+\end{enumerate}
+
+In the first way, we always expand the leftmost variable first. While in the second way, we always
+expand the rightmost variable first. Note that those are not only ways to derive $aabb$. But since
+they are special, we give them names \emph{leftmost derivation} and \emph{rightmost derivation}.
+
+Alternatively, we can draw a \emph{parse tree} of $aabb$. Though there are multiple possible
+derivations, there is only one parse tree for $aabb$.
+
+\begin{figure}[ht]
+
+\Tree
+[.S
+  [.a ]
+  [.A
+    [.a ]
+    [.A
+      [.$\epsilon$ ]
+    ]
+  ]
+  [.b ]
+  [.B
+    [.b ]
+    [.B
+      [.$\epsilon$ ]
+    ]
+  ]
+]
+
+\caption{the parse tree for the example}
+\label{fig:fig31}
+\end{figure}
+
+Unfortunately, this is not always the case. It is possible that there are multiple distinct
+parse trees for a string. For example consider this CFG:
+
+\begin{align*}
+&S \rightarrow aAb \\
+&A \rightarrow aA|ab|b
+\end{align*}
+
+And for the string $aabb$, there can be two distinct parse trees for it:
+
+\begin{figure}[ht]
+
+\Tree
+[.S
+  [.a ]
+  [.A
+    [.ab ]
+  ]
+  [.b ]
+]
+\Tree
+[.S
+  [.a ]
+  [.A
+    [.a ]
+    [.A
+      [.b ]
+    ]
+  ]
+  [.b ]
+]
+
+
+\caption{two possible parse trees for the example}
+\label{fig:fig32}
+\end{figure}
+
+In the case that a string $s$ has more than one possible parse tree using the rules in a grammar
+$G$, we say that the string $s$ is \emph{ambiguous} with respect to $G$. And a grammar $G$ is
+ambiguous if there exists a string $s$ that is ambiguous with respect to $G$. There are methods
+to eliminate ambiguity for some $G$. But there are some grammars that are inherently ambiguous
+and no method can eliminate the ambiguity.
+
+\subsection{Formal Definitions for Concepts}
+
+Now we can give a formal definition to a \emph{context free grammar}. There are also formal
+definitions of \emph{yield} and \emph{derive}.
+
+\begin{definition}
+A context free grammar, $G$, is a tuple $(V,\Sigma,R,S)$ where
+\begin{itemize}
+\item $V$ is a finite set of \emph{variables}
+\item $\Sigma$ is the alphabet
+\item $R \subseteq V \times (V \cup \Sigma)^\ast$ is a finite set of \emph{rules}
+\item $S \in V$ is the \emph{start variable}
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+Suppose $x$, $y$ and $w$ are strings in $(V \cup \Sigma)^\ast$ and $B$ is a variable. Then
+$xBy$ \emph{yields} $xwy$, written as $xBy \Rightarrow xwy$, if there is a rule in $R$ of the form
+$B \rightarrow w$.
+\end{definition}
+
+\begin{definition}
+If $x$ and $w$ in $(V \cup \Sigma)^\ast$, then $w$ \emph{derives} $x$, written as $w \xRightarrow
+{\ast} x$, if we can get from $w$ to x in zero or more yields steps.
+\end{definition}
+
+\begin{definition}
+If $G$ is a grammar, then $L(G)$, the language of $G$, is the set $\{w \in \Sigma^\ast \mid
+S \xRightarrow{\ast} w\}$.
+\end{definition}
+
+\subsection{DFAs and CFGs}
+
+Given a DFA $M$, we can convert it to a CFG $G$ representing the same language easily. To do it,
+we need to
+\begin{enumerate}
+\item make a variable $Q_i$ for each state $q_i$ of M
+\item add the rule $Q_i \rightarrow aQ_j$ to $G$ if there is a transition with $a$ from $q_i$ to
+$q_j$
+\item add the rule $Q_i \rightarrow \epsilon$ if $q_i$ is an accept state
+\item make $Q_0$ the start variable of $G$, where $q_0$ is the start state of $M$
+\end{enumerate}
+
+\section{Pushdown Automata}
+
+\subsection{The Definition}
+
+As we did for regular languages, for \emph{context free languages} we would like to build some
+automata to accept them. It turns out that there is exactly a class of machines, called \emph{
+pushdown automata}, accepting them.
+
+We define a pushdown automaton formally as follows:
+
+\begin{definition}
+A \emph{pushdown automaton}, $M$, is a tuple $(Q,\Sigma,\Gamma,\delta,q_0,F)$ where
+\begin{itemize}
+\item $Q$ is a finite set of states
+\item $\Sigma$ is the input alphabet
+\item $\Gamma$ is the stack alphabet
+\item
+$\delta : Q \times \Sigma_{\epsilon} \times \Gamma_{\epsilon} \mapsto \mathcal{P}(Q \times \Gamma)$
+is the transition function
+\item $q_0 \in Q$ is the start state
+\item $F \subseteq Q$ is the set of the accept states
+\end{itemize}
+\end{definition}
+
+The definition above is quite similar to that of a NFA. What is new here is the presence of a
+\emph{stack}. There is the alphabet $\Gamma$ associated with the stack, and the $\delta$ function
+reads an extra input which is a symbol drawn from $\Gamma_{\epsilon}$ and produces an extra
+output to the stack. As the definition of the $delta$ function suggests, since there are
+$\epsilon$ subscripts in the input alphabets and the output is a set, a PDA is nondeterministic.
+
+Now, we describe how a PDA $M$ computes. Basically, it reads a symbol from the input string and
+a symbol from the stack, transitions to the next state and puts a symbol to the stack following
+$\delta$. Just like DFAs/NFAs, it reads the input string from left to right and can never read
+backward. The key difference with DFA/NFA is that there is a stack of infinite capacity. Without
+it a PDA would be nothing but a DFA/NFA.
+
+More formally, for a PDA $M$, a \emph{configuration} of $M$ is a tuple $(q,string,stack)$. Assume
+the current configuration of $M$ is $(q,w \cdot w_{\text{rest}},s \cdot s_{\text{rest}})$. On
+reading an input symbol $w$, if there is a $(q',s') \in \delta(q,w,s)$, $M$ transitions to the
+new configuration $(q',w_{\text{rest}},s' \cdot s_{\text{rest}})$. There may be many pairs
+$(q,s)$ produced by the $\delta$ function, and it behaves pretty much like the way a NFA behaves.
+It splits out for each pair produced. There may be no pair at all, then the (current branch of)
+computation terminates immediately.
+
+What we described above is a single step of computation of a PDA. For a DFA/NFA, we defined a
+$\delta^\ast$ function specifying how it transitions on a string rather than a symbol. We can
+do the same for a PDA. We denote the single step computation from configuration $c_1$ to
+configuration $c_2$ by $c_1 \vdash c_2$. And we denote $c_1 \vdash^\ast c_n$ if there exists
+finite steps of computations $c_1 \vdash c_2$, $c_2 \vdash c_3$, $\dots$, $c_{n-1} \vdash c_n$.
+
+Now, we can write down whether a PDA $M$ accepts a string $w$. That is, $M$ accepts $w$ if and only
+if $(q_0,w,\epsilon) \vdash^\ast (q_f,\epsilon,s)$ where $q_f \in F$.
+
+\subsection{The Equivalence}
+
+\begin{theorem}
+A language is context free if and only if some PDA accepts it.
+\end{theorem}
+
+Suppose $L = L(G)$ for some CFG $G$. To build a PDA $M$ accepting $L$:
+
+\begin{enumerate}
+
+\item We must be able to test if the stack is empty. The way to do it is that we put a
+special purpose symbol, say $\$$, right after the PDA starts. That is $\delta(q_0,\epsilon,\epsilon) = \{(q_1,\$)\}$.
+
+\item Then, we put the start variable of $G$, $S$. That is
+$\delta(q_1,\epsilon,\epsilon) = \{(q_2,S)\}$.
+
+\item The next move of $M$ depends on the stack. If the top of the stack is a variable symbol $A$,
+select one of the rules for $S$ and substitutes $A$ by the string on the right hand side of the
+rule.
+
+\item If the top of the stack is a terminal symbol $a$, read the next input symbol and compare it
+to $a$. If they match, transition to the next configuration following $\delta$. If not, terminate
+this branch of computation.
+
+\item If the top of the stack is the marker $\$$, transition to the accept state.
+
+\item Repeat step 3-5 until all branches of the computations of $M$ are terminated or the input
+string is exhausted.
+
+\end{enumerate}
 
 \end{document}
