@@ -1653,4 +1653,90 @@ string is exhausted.
 
 \end{enumerate}
 
+\section{CNF, CYK Parsing and Pumping Lemma for CFL}
+
+\subsection{Chomsky Normal Form}
+
+CFGs can be messy. For example, consider the grammar shown below:
+
+\begin{align*}
+&S_0 \rightarrow S|X|Z \\
+&S \rightarrow A \\
+&A \rightarrow B \\
+&B \rightarrow C \\
+&C \rightarrow Aa \\
+&X \rightarrow C \\
+&Y \rightarrow aY|a \\
+&Z \rightarrow \epsilon
+\end{align*}
+
+There are several problems with this grammar. Variable $Y$ is unreachable from $S_0$ so
+the rule for it is useless. $A$ is useless too, because as we reach $A$ we immediately get trapped
+in an infinite loop. Rules like $S \rightarrow A$ are redundant in the sense that we can replace
+any occurrence of $S$ by $A$. There rules are called \emph{unit rules}.
+
+We can resolve these problems by removing useless variables and rules involving them. What's more,
+there is a normal form for CFG call \emph{Chomsky normal form}, abbreviated CNF, defined as
+follows:
+
+\begin{definition}
+A context free grammar is in \emph{Chomsky normal form} if every rule is of the form
+\begin{align*}
+&A \rightarrow BC \\
+&A \rightarrow a
+\end{align*}
+where $a$ is any terminal and $A$, $B$ and $C$ are variables except that $B$ and $C$ may not be
+the start variable. In addition, we permit $S \rightarrow \epsilon$.
+\end{definition}
+
+We can transform any context free grammar $G$ into Chomsky normal form. First, we add a new start
+variable $S_0$ and a rule $S_0 \rightarrow S$ (which guarantees that the start variable does not
+appear at the right hand side of a rule). Then, we eliminate all $\epsilon$ rules. We also
+eliminate unit rules. Finally, we convert the remaining rules into the proper form.
+
+To eliminate a $\epsilon$ rule $A \rightarrow \epsilon$, for each occurrence of $A$ on the right
+hand side of a rule, we add a new rule with that occurrence removed. For example, $C \rightarrow
+aAbAc$ becomes three rules $C \rightarrow abAc$, $C \rightarrow aAbc$ and $C \rightarrow abc$. If
+we have $C \rightarrow A$, we add a rule $C \rightarrow \epsilon$ (only if we did not eliminate
+$C \rightarrow \epsilon$). After this, we can safely remove the rule $A \rightarrow \epsilon$.
+
+To eliminate a unit rule $A \rightarrow B$, for each rule $B \rightarrow u$, where $u$ is a string
+of variables and terminals, we add a rule $A \rightarrow u$ (only if this rule is not a unit rule
+already removed). After this, we can safely remove the rule $A \rightarrow B$.
+
+Finally, we cleanup the remaining rules. We break all rules whose right hand side is of length
+greater than 2 or is a mixture of terminals and variables into smaller rules by adding several
+intermediate variables.
+
+\subsection{Cocke-Younger-Kasami Parsing}
+
+We want to test if a string can be derived from a CFG. For a string $s$ whose length is $n$, we
+reconstruct the parse tree bottom-up. In the first iteration, we break $s$ into $n$ symbols and
+check for each symbol which rule can derive it. In the second iteration, we group adjacent symbols
+into strings of length $2$, and check for each such string which rule can derive it. In the next
+iteration, as we can imagine, we need to parse strings of length $3$. As this procedure continues,
+at some point, we will need to parse a string of length $n$, which is the original string $s$.
+
+\subsection{Pumping Lemma}
+
+A DFA has a finite number of states and a CFA has a finite number of variables. Any sufficient long
+string drives the DFA visiting a state at least twice. In a similar manner, instead of a
+computation in the case of a DFA, a parse tree of any sufficient long string with respect to a CFG
+must have a path from the root to a leaf consisting of at least one variable duplicated.
+
+Say, there is a path $S \dots R \dots R \dots a$, where $S$ is the start variable, $R$ is a
+variable occurred twice and $a$ is a terminal. Note that there can be multiple paths like this with
+(maybe distinct) $a$s. That is to say, the second occurrence of $R$ yields a substring $x$ and
+the first occurrence of $R$ yields a substring $vxy$. This suggests $R$ can yield a string
+containing some string yielded by $R$ - the $x$ part. For $vxy$ yielded by $R$, since $x$ is also
+yielded by $R$, we can replace $x$ with another $vx'y$ where $x'$ can be yielded by $R$. This is
+quite similar to the Pumping lemma for DFA.
+
+\begin{theorem}[Pumping Lemma for CFL]
+For any context free language $L$, there is a number $p$ (the pumping length) such that \\
+$\forall s \in L, |s| \geq p$, \\
+\indent $\exists uvxyz$, $s = uvxyz$, $|uv| > 0$ and $|vxy| \leq p$, \\
+\indent\indent $\forall i \geq 0$, $uv^ixy^iz \in L$.
+\end{theorem}
+
 \end{document}
