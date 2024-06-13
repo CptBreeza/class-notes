@@ -1,0 +1,716 @@
+\documentclass[11pt]{article}
+\usepackage{lindrew}
+\usepackage{proof}
+
+\newcommand{\Zn}{\mathbb{Z}_n}
+\newcommand{\Zns}{\mathbb{Z}^\ast_n}
+\newcommand{\Zs}{\mathbb{Z}^\ast}
+\newcommand{\Dotn}{\cdot_n}
+\newcommand{\Inzns}{\;\;(\Zn)}
+
+\title{6.042J - Mathematics for Computer Science}
+\author{CptBreeza}
+\date{June 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Proof Techniques}
+
+\subsection{Proof by Contradiction}
+
+Normally if we want to prove a proposition $P$, we assume its negation $\neg P$ and derive
+a contradiction, showing that it is only possible that $P$ is true.
+
+The following inference justifies this methodology:
+
+\[
+\infer{P}{\neg P \Rightarrow \text{contraidtion}}
+\]
+
+\subsubsection{Examples}
+
+Prove that $\sqrt{2}$ is not a rational number.
+
+\begin{proof}
+We prove it by contradiction. Suppose that $\sqrt{2}$ \emph{is} a rational number. Every rational number can be written as a fraction $\frac{s}{t}$ where $s,t \in \mathbb{Z}$. We can assume that $s$ has no common divisor with $t$, for if it does, we can divide both $s$
+and $t$ with the common divisor and get a pair of other integers $s'$ and $t'$, then we
+will use them.
+
+If $s$ has no common divisor with $t$, $s$ and $t$ cannot be both even numbers. A even
+number can be divided by $2$. If they are both even numbers, they share a common divisor
+$2$. But the following reasoning show that both $s$ and $t$ must be even numbers:
+\begin{align*}
+\frac{s}{t} &= \sqrt{2} \\
+s &= \sqrt{2}t \\
+s^2 &= 2t^2
+\end{align*}
+
+The last equation shows that $s^2$ is an even number, since it is a multiple of $2$. If
+$s^2$ is an even number, $s$ must also be an even number. Say $s = 2s'$. Now we have
+\begin{align*}
+(2s')^2 &= 2t^2 \\
+4s'^2 &= 2t^2 \\
+2s'^2 &= t^2
+\end{align*}
+
+We see that this time $t^2$ is a multiple of $2$. By the same argument, $t$ must be an even
+number. We derived that both $s$ and $t$ must be both even numbers, which contradicts with
+the previous assumption that $s$ and $t$ share no common divisor. So $\sqrt{2}$ is not a
+rational number.
+
+\end{proof}
+
+\subsection{The Well-Ordering Principle}
+
+There is a basic fact about the natural numbers:
+
+\begin{theorem}[The Well-Ordering Principle]
+Every non-empty subset of natural numbers $S \subseteq \mathbb{N}$ contains a least element.
+\end{theorem}
+
+This fact is useful when we want to prove a proposition about natural numbers and it is
+usually used together with proof by contradiction.
+
+\subsubsection{Examples}
+
+Prove that any positive numbers $s$ and $t$ can be written in \emph{lowest terms}, that is,
+in the form $\frac{s'}{t'}$ where $s'$ and $t'$ are positive integers with no common
+divisors.
+
+\begin{proof}
+We prove it by contradiction. Suppose that there \emph{are} positive numbers $s$ and $t$
+such that $\frac{s}{t}$ cannot be written in lowest terms. Let $C$ be the set of positive
+integers that are numerators of such fractions. $s \in C$ so $C$ is not empty.
+
+By Well Ordering Principle, $C$ has a smallest element $s_0$. By the definition of $C$,
+there is a fraction $\frac{s_0}{t_0}$ that cannot be written in lowest terms. What it means
+is that $m_0$ and $n_0$ has a common divisor $p > 1$. Now we have
+\[
+  \frac{m_0/p}{n_0/p} = \frac{m_0}{n_0}
+\]
+That is to say that $\frac{m_0/p}{n_0/p}$ cannot be written in lowest terms either. By the
+definition of $C$, $m_0/p$ is in $C$. But $m_0/p < m_0$, which contradicts the fact that
+$m_0$ is the smallest element of $C$.
+
+\end{proof}
+
+\subsection{Proof by Induction}
+
+Another way to prove propositions about natural numbers is by induction.
+
+\begin{theorem}[The Induction Principle]
+Let $P$ be a predicate on natural numbers. If
+\begin{itemize}
+\item $P(0)$ is true, and
+\item if $P(n)$ is true, $P(n+1)$ is true for all natural number $n$
+\end{itemize}
+Then $P(m)$ is true for all natural numbers.
+\end{theorem}
+
+\subsubsection{Examples}
+
+Prove that for any natural number $n$, $\Sigma_{i=1}^n i = \frac{n(n+1)}{2}$.
+
+\begin{proof}
+We prove it by induction on $n$.
+
+\textbf{Base case:} $n = 0$. For $n = 0$, there are no terms in the summation on the left
+hand side, so it is equal to $0$. The right hand side also gives a $0$. So the formula
+holds.
+
+\textbf{Inductive case:} We \emph{assume} that $\Sigma_{i=1}^n i = \frac{n(n+1)}{2}$ and we
+want to \emph{prove} that $\Sigma_{i=1}^{n+1} i = \frac{(n+1)(n+2)}{2}$.
+
+We expand the left hand side of the equation that we want to prove and apply the induction
+hypothesis
+\begin{align*}
+\Sigma_{i=1}^{n+1} i &= (\Sigma_{i=1}^n i) + (n+1) \\
+&= \frac{n(n+1)}{2} + (n+1) \\
+&= \frac{n(n+1)+2(n+1)}{2} \\
+&= \frac{(n+1)(n+2)}{2}
+\end{align*}
+and finally established that $\Sigma_{i=1}^{n+1} i = \frac{(n+1)(n+2)}{2}$.
+
+\end{proof}
+
+\subsection{A Variant of Proof by Induction: Strong Induction}
+
+In the inductive case of a proof by induction, we assume $P(n)$ and need to prove $P(n+1)$.
+In fact, we can use a much stronger assumption.
+
+\begin{theorem}[Principle of Strong Induction]
+Let $P$ be a predicate on natural numbers. If
+\begin{itemize}
+\item $P(0)$ is true, and
+\item if $P(0), P(1), \dots, P(n)$ is true, $P(n+1)$ is true for all natural number $n$
+\end{itemize}
+then $P(m)$ is true for all natural numbers.
+\end{theorem}
+
+\section{Number Theory}
+
+In this section, the default set of variables is $\mathbb{Z}$.
+
+\subsection{Divisibility}
+
+\begin{definition}
+$a$ \emph{divides} $b$ (notation $a|b$) iff there is an integer $k$ such that $ak=b$.
+\end{definition}
+
+\subsubsection{Facts}
+
+\begin{enumerate}
+\item If $a|b$ and $b|c$, then $a|c$.
+\begin{proof}
+$a|b$ so $b=ka$. $b|c$ so $c=k'b$. Combine them to get $c=k'ka$.
+\end{proof}
+
+\item If $a|b$ and $a|c$, then $a|sb+tc$ for all $s$ and $t$.
+\begin{proof}
+$a|b$ and $a|c$ so $sb+tc=ska+tk'a=(sk+tk')a$.
+\end{proof}
+
+\item For all $c \neq 0$, $a|b$ if and only if $ca|cb$.
+\begin{proof}
+\textbf{The only-if part:} $a|b$ so $b=ka$. $b=ka$ so $cb=cka=kca$, which is $ca|cb$.
+\textbf{The if part:} $ca|cb$ so $cb=kca$. $cb=kca$ and $c \neq 0$ so $b=ka$, which is
+$a|b$.
+\end{proof}
+
+\end{enumerate}
+
+\begin{theorem}[Division Theorem]
+Let $n$ and $d$ be integers such that $d > 0$. Then there exists a unique pair of integers
+$q$ and $r$, such that $n = qd+r$ and $0 \leq r < d$.
+\end{theorem}
+
+\begin{proof}
+We split the proof into two parts. One part on existence and one part on uniqueness.
+
+First, we prove that there exists such a pair $q$ and $r$. We prove it by strong induction
+on $n$.
+
+\textbf{Base Case:} If $0 \leq n < d$, $q = 0$ and $r = n$.
+
+\textbf{Inductive Case:} We assume the proposition holds for all integers $[0,n-1]$ and
+$n \geq d$. We need to prove that the proposition holds for $n$. Since $0 \leq n-d < n$,
+by the induction hypothesis, $n-d=qd+r$ and $0 \leq r < d$, we get $n=(q+1)d+r$.
+
+Then we prove that if there exists two pairs $q,r$ and $q',r'$ such that $n=qd+r=q'd+r'$
+and $0 \leq r,r' < d$, it must be that $q=q'$ and $r=r'$. We prove it by contradiction.
+
+We assume that $0 \leq r \leq r' < d$. We have $r'-r=kd$ where $k = q'-q$. If $q'=q$ then
+$r'$ must be equal to $r$. If $q' \neq q$, since $r' \geq r$, it must be that $k > 1$.
+But $r' > r'-r=kd$ implies that $r' > kd > d$, which contradicts our assumption that
+$r' < d$.
+
+\end{proof}
+
+\subsection{Greatest Common Divisor}
+
+\begin{lemma} \label{lemma:6}
+For $b \neq 0$, $gcd(a,b) = gcd(b,rem(a,b))$.
+\end{lemma}
+
+\begin{proof}
+We rewrite $a$ as $a = qb+r$ where $0 \leq r < b$. Since $a$ is a linear combination of $b$
+and $r$, any common divisor of $b$ and $r$ is a also a divisor of $a$. This also means that
+any common divisor of $b$ and $r$ is also a common divisor of $a$ and $b$. Similarly, since
+$r = -qb+a$, any common divisor of $a$ and $b$ is also a divisor of $r$ and $b$.
+\end{proof}
+
+\begin{theorem} \label{theorem:7}
+Th greatest common divisor of $a$ and $b$ is a linear combination of $a$ and $b$.
+\end{theorem}
+
+\begin{proof}
+Any common divisor would divide any linear combination of $a$ and $b$. So is the greatest
+commont divisor.
+\end{proof}
+
+\subsection{The Fundamental Theorem of Arithmetic}
+
+\begin{lemma}
+If $p$ is a prime and $p|ab$, then $p|a$ or $p|b$.
+\end{lemma}
+
+\begin{proof}
+If $p$ divides $a$, we are done. Then the other case is that $p$ does not divide $a$. That
+is to say, $gcd(a,p)=1$ and we have $sa+tp=1$. We multiply both sides by $b$ and get
+$sab+tpb=b$. $p|sab$ since $p|ab$ and $p|tbp$, which implies $p|b$.
+\end{proof}
+
+\begin{lemma} \label{lemma:9}
+Every positive integer can be expressed as a product of primes.
+\end{lemma}
+
+\begin{proof}
+We prove it by contradiction. Suppose for contrary there is a positive number $s$ that can
+not be expressed as a product of primes. Let $C$ be the set of positive numbers that cannot
+be expressed as a product of primes. $s \in C$ so $C$ is not empty.
+
+By Well Ordering Principle, $C$ has a smallest element $s_0$. By the definition of $C$,
+$s_0$ cannot be expressed as a product of primes. Then $s_0$ cannot be a prime number, since
+a prime is a product of primes. So $s_0$ must be a product of two integers $1 < a,b < s_0$.
+And $a$ can be written as a product of primes $p_1p_2 \dots p_i$ and $b$ can be written as a
+product of primes $q_1q_2 \dots q_j$. $s_0 = ab = p_1 \dots p_iq_1 \dots q_j$. That is,
+$s_0$ can be expressed as a product of primes, which contradicts the claim $s_0 \in C$.
+\end{proof}
+
+\begin{theorem}[Fundamental Theorem of Arithmetic]
+Every positive number is a product of a unique weakly decreasing sequence of primes.
+\end{theorem}
+
+\begin{proof}
+We split the proof into two parts. One part for existence and one part for uniqueness.
+
+First we prove that there is such a sequence. By lemma \ref{lemma:9} every positive can be
+expressed as a product of primes. Then we can write those primes divisors in a weakly
+decreasing sequence.
+
+Then we prove the sequence is unique. We prove it by contradiction. Assume that there are numbers that are products of a distinct weakly decreasing sequence of primes. Let $n$ be
+the smallest of them and
+\begin{align*}
+n &= p_1p_2 \dots p_i \\
+&= q_1q_2 \dots q_j
+\end{align*}
+
+If $p_1 = q_1$, $n/q_1 = p_2 \dots p_i = q_2 \dots q_j$ is still products of distinct
+sequences. But $n/q_1 < n$, which is not possible by the Well Ordering Principle. So it must
+be $p_1 \neq q_1$.
+
+If $p_1 \neq q_1$, we assume that $p_1 < q_1$. Since the sequence is weakly decreasing, all
+$p_x < q_1$. The fact that $q_1|p_1p_2 \dots p_i$ implies that $q_1|p_x$, but $q_1 > p_x$,
+which is not possible.
+
+\end{proof}
+
+\subsection{Modular Arithmetic}
+
+\begin{definition}
+$a$ is \emph{congruent to} $b$ \emph{modulo} $n$ iff $n|(a-b)$. This is written as
+$$
+a \equiv b \pmod{n}
+$$
+\end{definition}
+
+\begin{lemma} \label{lemma:12}
+$a \equiv b \pmod{n}$ iff $rem(a, n) = rem(b,n)$.
+\end{lemma}
+
+\begin{proof}
+We split the proof into two parts. One part for the if direction and one part for the
+only-if direction.
+
+\textbf{The proof of the if part}: We can write $a = pn + r$ and $b = p'n + r$ where
+$0 \leq r < n$. Subtract these two equations and we get $a - b = (p - p')n$ which means
+that $n|(a-b)$.
+
+\textbf{The proof of the only-if part}: Suppose $a=pn+r$ and $b=p'n+r'$ where
+$0 \leq r,r' < n$. Subtract these two equations and we get $a-b=(p-p')n+(r-r')$. Since
+$n|(a-b)$ and $p|(p-p')n$, $n|((a-b)-(p-p')n)$, which is $n|(r-r')$. We known that
+$0 \leq r,r' < n$, so it is only possible that $r-r'=0$ and $r=r'$.
+
+\end{proof}
+
+\begin{lemma}
+Some properties of $\equiv \pmod{n}$:
+\begin{align*}
+a &\equiv a \pmod{n} \tag{reflexivity} \\
+a \equiv b \text{ IFF } b &\equiv a \pmod{n} \tag{symmetry} \\
+\text{(}a \equiv b \text{ AND } b \equiv c \text{)} \text{ IMPLIES } a &\equiv c \pmod{n}
+\tag{transitivity}
+\end{align*}
+\end{lemma}
+
+\begin{proof}
+These properties can easily be proved using lemma \ref{lemma:12}. \\
+\textbf{reflexivity}: $rem(a,n) = rem(a,n)$. \\
+\textbf{symmetry}: $rem(a,n)=rem(b,n) \Leftrightarrow rem(b,n)=rem(a,n)$. \\
+\textbf{transitivity}: $rem(a,n)=rem(b,n) \wedge rem(b,n)=rem(c,n) \Rightarrow rem(a,n)=
+rem(c,n)$.
+\end{proof}
+
+\begin{lemma} \label{lemma:14}
+$a \equiv rem(a,n) \pmod{n}$.
+\end{lemma}
+
+\begin{proof}
+Let $a = pn + r$ where $0 \leq r < n$, then $a-rem(a,n)=pn+r-r=pn$, which means
+$p|(a-rem(a,n))$.
+\end{proof}
+
+\begin{lemma} \label{lemma:15}
+If $a \equiv b \pmod{n}$ and $c \equiv d \pmod{n}$, then
+\begin{enumerate}
+\item $a + c \equiv b + d \pmod{n}$,
+\item $ac \equiv bd \pmod{n}$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+By subtraction and regrouping we get $(a+c)-(b+d)=(a-b)+(c-d)$. Since $p|(a-b)$ and
+$p|(c-d)$, $p|((a-b)+(c-d))$, which can be rewritten as $p|((a+c)-(b+d))$.
+
+From $p|(b-a)$ we have $p|(b-a)c$. From $p|(c-d)$ we have $p|(d-c)b$. Then we have
+$p|( (b-a)c + (d-c)b )$, which is $p|(bd-ac)$.
+\end{proof}
+
+\subsection{Remainder Arithmetic}
+
+\begin{definition}
+\begin{align*}
+i +_n j &::= rem(i+j, n) \\
+i \cdot_n j &::= rem(ij, n)
+\end{align*}
+\end{definition}
+
+\begin{lemma} \label{lemma:17}
+$rem(i+j,n) = rem(i,n) +_n rem(j,n)$.
+\end{lemma}
+
+
+\begin{proof}
+Expand $+_n$ on the right hand side shows what we want to prove is:
+\[
+  rem(i+j,n) = rem(rem(i,n)+rem(j,n),n)
+\]
+
+By lemma \ref{lemma:14}, $i \equiv rem(i,n) \pmod{n}$ and $j \equiv rem(j,n) \pmod{n}$. And
+by lemma \ref{lemma:15}, $i+j \equiv rem(i,n)+rem(j,n) \pmod{n}$. By lemma \ref{lemma:12},
+$i+j \equiv rem(i,n) + rem(j,n) \pmod{n}$ implies that
+$rem(i+j,n) = rem((rem(i,n) + rem(j,n), n)$, which is exactly what we want to prove.
+\end{proof}
+
+\begin{lemma} \label{lemma:18}
+$rem(ij,n) = rem(i,n) \cdot_n rem(j,n)$.
+\end{lemma}
+
+\begin{proof}
+Expand $\cdot_n$ on the right hand side shows what we want to prove is:
+\[
+  rem(ij,n) = rem(rem(i,n) \cdot rem(j,n),n)
+\]
+
+By lemma \ref{lemma:14} and lemma \ref{lemma:15}, we have
+$ij = rem(i,n) \cdot rem(j,n) \pmod{n}$. By lemma \ref{lemma:12},
+$ij = rem(i,n) \cdot rem(j,n) \pmod{n}$ implies that
+$rem(ij,n) = rem(rem(i,n) \cdot rem(j,n), n)$, which is exactly what we want to prove.
+\end{proof}
+
+The set of integers in the range $[0, n)$ together with the operations $+_n$ and $\cdot_n$
+is referred to as $\mathbb{Z}_n$, the \emph{ring of integers modulo} $n$. The $+_n$ is
+associative and commutative. The $\cdot_n$ is associative and commutative. $+_n$ has an
+identity and an inverse. $\cdot_n$ has an identity. And $\cdot_n$ distributes oveer $+_n$.
+
+\subsection{Multiplicative Inverses and Cancelling}
+
+\begin{definition}
+Integers that have no prime factor in common are called \emph{relatively prime}.
+\end{definition}
+
+\begin{lemma}
+If $k \in [0, n)$ is relatively prime to $n$, then $k$ has an inverse in $\mathbb{Z}_n$.
+\end{lemma}
+
+\begin{proof}
+If $k$ is relatively prime to $n$, by definition $gcd(n,k) = 1$. By theorem
+\ref{theorem:7}, there is a linear combination $sn+tk=1$. By lemma \ref{lemma:17} and lemma
+\ref{lemma:18} we get
+\begin{align*}
+  (rem(s,n) \cdot rem(n,n)) + (rem(t,n) \cdot rem(k,n)) &= 1 \;\;(\mathbb{Z}_n) \\
+  rem(t,n) \cdot k &= 1 \;\;(\mathbb{Z}_n)
+\end{align*}
+So we have $rem(t,n)$ as a multiplicative inverse of $k$.
+\end{proof}
+
+\begin{lemma}
+If $i$ and $j$ are both inverses of $k$ in $\mathbb{Z}_n$, then $i = j$.
+\end{lemma}
+
+\begin{proof}
+$i = i \cdot 1 = i \cdot (k \cdot j) = (i \cdot k) \cdot j = 1 \cdot j = j
+\;\;(\mathbb{Z}_n)$.
+\end{proof}
+
+\begin{definition}
+A number $k$ is \emph{cancellable} in $\mathbb{Z}_n$ iff
+\[
+  k \cdot b = k \cdot a \Rightarrow b = a \;\;(\mathbb{Z}_n)
+\]
+for all $a, b \in [0, n)$.
+\end{definition}
+
+\begin{lemma}
+If $k$ has an inverse in $\mathbb{Z}_n$, then it is cancellable.
+\end{lemma}
+
+\begin{proof}
+For any $a, b \in \mathbb{Z}_n$, if $k \cdot a = k \cdot b \;\;(\mathbb{Z}_n)$, we multiply
+$k^{-1}$ on both sides
+\begin{align*}
+k^{-1} \cdot k \cdot a &= k^{-1} \cdot k \cdot b \\
+a &= b
+\end{align*}
+\end{proof}
+
+\subsection{Euler's Theorem}
+
+\begin{definition}
+For all $n > 0$, define
+\[
+  \Phi(n) ::= \text{the number of integers in } [0, n) \text{ that is relatively prime to }
+  n
+\]
+\end{definition}
+
+\begin{definition}
+Let $\Zns$ be the set of integers in $(0,n)$, that are relatively prime to $n$.
+\end{definition}
+
+By the definition we have $\Phi(n) = |\Zns|$.
+
+\begin{lemma}
+If $j,k \in \Zns$, then $j \cdot_n k \in \Zns$.
+\end{lemma}
+
+\begin{proof}
+Since $j$ shares no common divisor with $n$ and $k$ shares no common divisor with $n$, $jk$
+also shares no common divisor with $n$. That is to say, $gcd(jk,n)=1$. By Lemma
+\ref{lemma:6} we have $gcd(jk,n) = gcd(n,rem(jk,n))=1$, which implies $rem(jk,n)$ is
+relatively prime to $n$. Since $rem(jk,n) = j \cdot_n k$ and it is relatively prime to n,
+$j \cdot_n k \in \Zns$.
+\end{proof}
+
+\begin{definition}
+For any element $k$ and subset $S$ of $\Zns$, let $kS = \{k \cdot_n s \mid s \in S\}$.
+\end{definition}
+
+\begin{lemma} \label{lemma:26}
+If $k \in \Zns$ and $s \subseteq \Zn$, then $|kS| = |S|$.
+\end{lemma}
+
+\begin{proof}
+For any pair elements $k \Dotn a$ and $k \Dotn b$ in $S$, since $k$ is cancellable in $\Zn$
+\[
+  k \Dotn a = k \Dotn b \Rightarrow a = b
+\]
+That is to say multiplication by $k$ sends distinct elements in $S$ to distinct elements in
+$kS$. So $kS$ and $S$ are the same size.
+\end{proof}
+
+\begin{lemma} \label{lemma:28}
+If $k \in \Zns$, $k\Zns = \Zns$.
+\end{lemma}
+
+\begin{proof}
+We split the proof into two parts. First we show that $k\Zns$ and $\Zns$ are the same size.
+Then we show that $k\Zns$ is a subset of $\Zns$. These two facts imply that $k\Zns = \Zns$.
+
+Since $\Zns$ is a subset of $\Zn$ and $k \in \Zn$, by lemma \ref{lemma:28}, $k\Zns$ and
+$\Zns$ are the same size.
+
+Every element of $k\Zns$, say $k \Dotn k_i$, is in $\Zns$ by lemma \ref{lemma:26}. That is
+to say that every element of $k\Zns$ is also an element of $\Zns$. So $k\Zns$ is a subset of
+$\Zns$.
+\end{proof}
+
+\begin{theorem}[Euler's Theorem]
+For all $k \in \Zns$, $k^{\Phi(n)} \equiv 1 \pmod{n}$.
+\end{theorem}
+
+\begin{proof}
+Let
+\[
+  P = k_1k_2 \dots k_{\Phi(n)} \Inzns
+\]
+and
+\[
+  Q = (k \cdot k_1)(k \cdot k_2) \dots (k \cdot k_{\Phi(n)}) \Inzns
+\]
+
+$P$ is the product of all elements of $\Zns$ and $Q$ is the product of all elements of
+$k\Zns$ and $Q = k^{\Phi(n)}P \Inzns$. Since $k\Zns = \Zns$, $Q$ is also the products of all
+elements of $\Zns$. So we have
+\[
+  P = Q = k^{\Phi(n)}P \Inzns
+\]
+
+Furthermore by lemma \ref{lemma:26} $P \in \Zns$, we can cancel it, giving
+\[
+  1 = k^{\Phi(n)} \Inzns
+\]
+\end{proof}
+
+Euler's Theorem offers a way to compute inverses modulo $n$: if $k$ is relatively prime to
+$n$, then $k^{\Phi(n)}$ is a $\Zn$-inverse of $k$.
+
+\subsubsection{Computing Euler's $\Phi$ Function}
+
+\begin{lemma}
+$\Phi(pq) = (p-1)(q-1)$ for primes $p \neq q$.
+\end{lemma}
+
+\begin{proof}
+Instead of counting numbers that are relatively prime to $pq$, we count all numbers that are
+not relatively prime to $pq$. Since both $p$ and $q$ are prime numbers, the only numbers in
+$[0, pq)$ that are not relatively prime to $pq$ is multiples of $p$ and multiples of $q$.
+There are precisely $q$ multiples of $p$ and $p$ multiples of $q$ in $[0, pq)$. They both
+count $0$ so we need to subtract $1$ from the result. So there are $p + q - 1$ numbers in
+$[0, pq]$ that are not relatively prime to $pq$, that is
+\begin{align*}
+\Phi(pq) &= pq - (p + q - 1) \\
+&=p(q-1) - (q - 1) \\
+&=(p-1)(q-1)
+\end{align*}
+\end{proof}
+
+\begin{theorem}
+If $p$ is a prime, then $\Phi(p^k) = p^k - p^{k-1}$ for $k \geq 1$.
+\end{theorem}
+
+\begin{proof}
+Since $p$ is a prime number, the only numbers that are not relatively prime to $p$ in
+$[0, p^k)$ is multiples of $p$. That is, every $p$th number among the $p^k$ numbers is
+divisible by $p$. So $1/p$ of these numbers are not relatively prime to $p$. That is,
+\[
+  \Phi(p^k) = p^k - (1/p)p^k = p^k - p^{k-1}
+\]
+\end{proof}
+
+\begin{lemma} \label{lemma:33}
+Suppose $a$ and $b$ are relatively prime and greater than $1$. The function $f:[0,ab)
+\mapsto [0,a) \times [0, b)$ defined by
+\[
+  f(x) ::= (rem(x,a), rem(x,b))
+\]
+is a bijection.
+\end{lemma}
+
+\begin{proof}
+By theorem \ref{theorem:2.8}, distinct $x \in [0, ab)$ maps to distinct $m \in [0,a)$ by
+$rem(x,a)$ maps to distinct $n \in [0,b)$ by $rem(x,b)$.
+\end{proof}
+
+\begin{lemma} \label{lemma:34}
+Suppose $a$ and $b$ are relatively prime and greater than $1$. The function $f:\Zs_{ab}
+\mapsto \Zs_a \times \Zs_b$ defined by
+\[
+  f(x) ::=(rem(x,a),rem(x,b))
+\]
+is a bijection.
+\end{lemma}
+
+\begin{proof}
+An obvious fact is that if $x$ is not relatively prime to $a$, then $x$ is not relatively
+prime to $ab$. The contrapositive of it says that if $x$ is relatively prime to $ab$, then
+$x$ is relatively prime to $x$. So take an element $x$ from $\Zs_{ab}$, $rem(x,a)$ is
+relatively prime to $a$ and $rem(x,b)$ is relatively prime to $b$. So the expression given
+in the lemma does a valid mapping.
+
+And since $\Zs_{ab} \subseteq [0,ab)$, by lemma \ref{lemma:33}, the function defined in the
+lemma is a bijection.
+\end{proof}
+
+\begin{theorem} \label{theorem:35}
+Suppose $a$ and $b$ are relatively prime and greater than 1, then
+$\Phi(ab) = \Phi(a)\Phi(b)$.
+\end{theorem}
+
+\begin{proof}
+By lemma \ref{lemma:34}, there is a bijection between $\Zs_{ab}$ and $\Zs_a \times \Zs_b$. That is to say, $|\Zs_{ab}|=|\Zs_a \times \Zs_b|$, which implies that
+$\Phi(ab)=\Phi(a)\Phi(b)$.
+\end{proof}
+
+\begin{corollary}
+For any number $n > 1$, if $p_1,p_2,\dots,p_j$ are the distinct prime factors of $n$, then
+\[
+  \Phi(n)=n\left(1-\frac{1}{p_1}\right)\left(1-\frac{1}{p_2}\right)\dots\left(1-
+  \frac{1}{p_j}\right)
+\]
+\end{corollary}
+
+\begin{proof}
+By theorem \ref{theorem:35} we have
+\begin{align*}
+\Phi(n) &= \Phi(p_1p_2 \dots p_j) \\
+&= \Phi(p_1)\Phi(p_2)\dots\Phi(p_j) \\
+&= (p_1-1)(p_2-1)\dots(p_j-1) \\
+&= n\left(\frac{p_1-1}{p_1}\right)\left(\frac{p_2-1}{p_2}\right)\dots\left(
+\frac{p_j-1}{p_j}\right)
+\end{align*}
+
+\end{proof}
+
+\subsection{Bonus: The Chinese Remainder Theorem}
+
+\begin{lemma} \label{lemma:2.8.1}
+Suppose $a$ and $b$ are relatively prime and greater than $1$. For all $m,n$, there is an
+$x$ such that
+\begin{align*}
+x &\equiv m \pmod{a} \\
+x &\equiv n \pmod{b}
+\end{align*}
+\end{lemma}
+
+\begin{proof}
+Since $a$ and $b$ are relatively prime, $a$ has an inverse in $\mathbb{Z}_b$ and $b$ has an
+inverse in $\mathbb{Z}_a$. We define $e_a ::= b^{-1}b$ and $e_b ::= a^{-1}a$. Let
+$x = me_a + me_b$. We know that
+\begin{align*}
+rem(x,a) &= rem(me_a,a) + rem(me_b,a) \\
+&=rem(m,a)rem(e_a,a) + rem(m,a)rem(e_b,a) \\
+&=rem(m,a)rem(b^{-1}b,a) + rem(m,a)rem(a^{-1}a,a) \\
+&=rem(m,a)
+\end{align*}
+That is to say $x \equiv m \pmod{a}$. And by the same reasoning we can show that
+$x \equiv n \pmod{b}$.
+\end{proof}
+
+\begin{lemma} \label{lemma:2.8.2}
+Suppose $a$ and $b$ are relatively prime and greater than $1$.
+$x \equiv 0 \pmod{a} \wedge x \equiv 0 \pmod{b} \Rightarrow x \equiv 0 \pmod{ab}$.
+\end{lemma}
+
+\begin{proof}
+Since $x \equiv 0 \pmod{a}$, $x = pa$. Since $x \equiv 0 \pmod{b}$, $x = qb$. Since $a$ and
+$b$ are relatively prime, the only way $a|x$ and $a|qb$ is that $a|q$. Then we can write
+$q=ra$ so $x=rab$. That means $ab|x$, which is also $x \equiv 0 \pmod{ab}$.
+\end{proof}
+
+\begin{lemma} \label{lemma:2.8.3}
+Suppose $a$ and $b$ are relatively prime and greater than $1$.
+$x \equiv x' \pmod{a} \wedge x \equiv x' \pmod{b} \Rightarrow x \equiv x' \pmod{ab}$.
+\end{lemma}
+
+\begin{proof}
+Let $s = x - x'$. By lemma \ref{lemma:2.8.2},
+\[
+x-x' \equiv 0 \pmod{a} \wedge x-x' \equiv 0 \pmod{b} \Rightarrow x-x' \equiv 0 \pmod{ab}
+\]
+
+From the definition we know that $x-x' \equiv 0 \pmod{a} \Leftrightarrow p|(x-x')$. But
+$p|(x-x') \Leftrightarrow x \equiv x' \pmod{a}$. So the implication above is just what want
+to proof.
+\end{proof}
+
+\begin{theorem}[The Chinese Remainder Theorem] \label{theorem:2.8}
+Suppose $a$ and $b$ are relatively prime and greater than $1$. For every $m,n$, there is an
+$x$ such that
+\begin{align*}
+x &\equiv m \pmod{a} \\
+x &\equiv n \pmod{b}
+\end{align*}
+Moreover, $x$ is unique to congruence modulo $ab$, namely, if $x'$ is also a solution, then
+$x \equiv x' \pmod{ab}$.
+\end{theorem}
+
+\begin{proof}
+By lemma \ref{lemma:2.8.1}, we know that there exists a solution $x$. Suppose that there is
+another solution $x'$, where $x \equiv m \equiv x' \pmod{a}$ and $x \equiv n \equiv x'
+\pmod{b}$. By lemma \ref{lemma:2.8.3} we know that $x \equiv x' \pmod{ab}$.
+\end{proof}
+
+\end{document}
