@@ -1,0 +1,447 @@
+\documentclass[11pt]{article}
+\usepackage{lindrew}
+\usepackage{listings}
+
+\definecolor{backcolor}{rgb}{0.95,0.95,0.92}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+
+\lstdefinestyle{cptbreeza}{
+  keywordstyle=\underbar,
+  commentstyle=\color{codegreen},
+  basicstyle=\linespread{0.99}\ttfamily,
+  captionpos=b,
+  numbers=left,
+  numbersep=10pt,
+  frame=single,
+}
+\lstset{style=cptbreeza}
+
+\newcommand{\Prob}[2]{\textbf{Input:} {#1} \\ \textbf{Output:} {#2}}
+
+\newcommand{\Arr}[1]{\langle {#1} \rangle}
+
+\declaretheoremstyle[
+  headpunct=:,
+  bodyfont=\normalfont
+]{loopinvariant}
+
+\declaretheoremstyle[
+  headpunct=:,
+  bodyfont=\normalfont
+]{runtime}
+
+\declaretheorem[style=loopinvariant, name=Loop Invariant, numbered=no]{inv*}
+\declaretheorem[style=runtime, name=Run Time, numbered=no]{rtime*}
+
+\title{6.006 - Introduction to Algorithms}
+\author{CptBreeza}
+\date{June 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Insertion Sort}
+
+\subsection{The Problem}
+
+\Prob
+{A sequence of $n$ numbers $\Arr{a_1,a_2,\dots,a_n}$.}
+{A permutation $\Arr{a'_1,a'_2,\dots,a'_n}$ of the input sequence such that
+$a'_1 \leq a'_2 \leq \dots \leq a'_n$.}
+
+\subsection{Procedures}
+
+\begin{lstlisting}[language=Python]
+def insertion_sort(a, n):
+    for i in range(1, n):
+        key = a[i]
+        j = i - 1
+        while j > -1 and a[j] > key:
+            a[j + 1] = a[j]
+            j = j - 1
+        a[j + 1] = key
+\end{lstlisting}
+
+\begin{inv*}
+At the start of each iteration of the \textbf{for} loop of lines $2-8$, the subarray
+$A[0:i-1]$ consists of the elements originally in $A[0:i-1]$, but in sorted order.
+\end{inv*}
+
+\begin{rtime*}
+$\Theta(n^2)$.
+\end{rtime*}
+
+\subsection{Advantages and Disadvantages}
+\textbf{Advantages:}
+\begin{enumerate}
+\item In place sorting (take no extra memories).
+\end{enumerate}
+\textbf{Disadvantages:}
+\begin{enumerate}
+\item Non-optimal running time.
+\end{enumerate}
+
+
+\section{Merge Sort}
+
+\subsection{The Problem}
+
+\Prob
+{A sequence of $n$ numbers $\Arr{a_1,a_2,\dots,a_n}$.}
+{A permutation $\Arr{a'_1,a'_2,\dots,a'_n}$ of the input sequence such that
+$a'_1 \leq a'_2 \leq \dots \leq a'_n$.}
+
+\subsection{Procedures}
+
+\begin{lstlisting}[language=Python]
+def merge(a, p, q, r):
+    n_l = q - p + 1
+    n_r = r - q
+    a_l = a[p:p + n_l]
+    a_r = a[p + n_l:p + n_l + n_r]
+    i = 0
+    j = 0
+    k = p
+
+    while i < n_l and j < n_r:
+        if a_l[i] <= a_r[j]:
+            a[k] = a_l[i]
+            i = i + 1
+        else:
+            a[k] = a_r[j]
+            j = j + 1
+        k = k + 1
+
+    while i < n_l:
+        a[k] = a_l[i]
+        i = i + 1
+        k = k + 1
+    while j < n_r:
+        a[k] = a_r[j]
+        j = j + 1
+        k = k + 1
+\end{lstlisting}
+
+\begin{rtime*}
+$\Theta(n)$.
+\end{rtime*}
+
+\begin{lstlisting}[language=Python]
+def merge_sort(a, p, r):
+    if p >= r:
+        return
+
+    q = math.floor((p + r) / 2)
+    merge_sort(a, p, q)
+    merge_sort(a, q + 1, r)
+    merge(a, p, q, r)
+\end{lstlisting}
+
+\begin{rtime*}
+$\Theta(n \cdot log(n))$.
+\end{rtime*}
+
+\subsection{Advantages and Disadvantages}
+
+\textbf{Advantages:}
+\begin{enumerate}
+\item Better running time.
+\end{enumerate}
+\textbf{Disadvantages}
+\begin{enumerate}
+\item Need extra memories while sorting.
+\end{enumerate}
+
+
+\section{Heap and Heapsort}
+
+\subsection{The Problem}
+
+Sorting problem.
+
+\subsection{Data Structures}
+
+\subsubsection{Binary Heap}
+
+The \emph{(binary) heap} data structure is an array that we can view as a nearly
+complete binary tree. The tree is completely filled on all levels except possibly
+the lowest, which is filled from left up to a point.
+
+The root of the tree is $A[1]$, and given the index $i$ of a node, we can compute
+the indices of its parent, left child, right child:
+\begin{lstlisting}[language=Python]
+def parent(i):
+    return math.floor(n / 2)
+
+def left(i):
+    return 2 * i
+
+def right(i):
+    return 2 * i + 1
+\end{lstlisting}
+
+\begin{proof}
+First we prove $left(i)$ and $right(i)$. We prove it by induction.
+
+\textbf{Base case:} $i=1$ implies $left(1)=2$ and $right(1)=3$, which is correct.
+
+\textbf{Inductive case}: Suppose $left(i)=2i$ and $right(i)=2i+1$, we need to prove
+that $left(i+1)=2(i+1)$ and $right(i+1)=2(i+1)+1$.
+
+Since the children of the $i$th node are at $2i$ and $2i+1$, the next two elements
+after are $2i+2$ and $2i+3$, and by the definition of binary heap they are exactly
+the left child and the right child of the $i+1$th node. Rewrite the indices of them
+as $2i+2=2(i+1)$ and $2i+3=2(i+1)+1$, this is exactly what we want to prove.
+
+For a non-root node $i$, it is either a left child or a right child of its parent
+node. If it is the left child, its parent node is at $\frac{i}{2}$. If it is the
+right child, its parent node is at $\frac{i-1}{2}$. In each case, its parent is at
+$\lfloor\frac{i}{2}\rfloor$.
+\end{proof}
+
+The \emph{height of a node} in a heap is the number of edges on the longest simple
+downward path from the node to a leaf, and the \emph{height of the heap} is the
+height of its root.
+
+An $n$-element heap has height $\lfloor \lg n \rfloor$.
+
+\begin{proof}
+As a binary heap is a nearly complete binary tree, for a heap of height $h$, it has
+at most $2^0+2^1+\dots+2^h=2^{h+1}-1$ elements when it is complete, and at least
+$2^0+2^1+\dots+2^{h-1}+1=2^h$ elements when there is only one element in the last
+level.
+
+For an $n$-element, $2^h \leq n \leq 2^{h+1}-1$ implies
+$h \leq \lg n \leq \lg(2^{h+1}-1) < \lg 2^{h+1} = h+1$. Since $h \leq \lg n < h+1$,
+we know that $h=\lfloor \lg n \rfloor$.
+\end{proof}
+
+\subsubsection{Max-Heap and Min-Heap}
+
+There are two kinds of binary heaps, max-heap and min-heap, each of which satisfies
+a \emph{heap property}. In a max-heap, the \emph{max-heap property} is that for
+every node $i$ other than the root, $A[parent(i)] \geq A[i]$.
+
+This implies that the largest element in a max-heap is stored at the root, and the
+subtree rooted at a node contains values no larger than that contained at the root
+itself.
+
+\subsection{Procedures}
+
+\subsubsection{Maintaining the Max-Heap Property}
+
+Assume subtrees rooted at $left(i)$ and $right(i)$ are max-heaps, the following
+procedure \textbf{max-heapify} makes the subtree rooted at $i$ a max-heap.
+
+\begin{lstlisting}[language=Python]
+def max_heapify(a, i, n):
+    left = 2 * i + 1
+    right = 2 * i + 2
+
+    j = left if left <= n and a[left] > a[i] else i
+    j = right if right <= n and a[right] > a[j] else j
+
+    if i != j:
+        a[i], a[j] = a[j], a[i]
+        max_heapify(a, j, n)
+\end{lstlisting}
+
+\begin{rtime*}
+Suppose the subtree rooted at $i$ has length $n$ and height $h$, then
+$T(n) = \Theta(\lg n) = \Theta(h)$.
+\end{rtime*}
+
+\subsubsection{Building a Max-Heap}
+
+\begin{lstlisting}[language=Python]
+def build_max_heap(a, n):
+    m = math.floor((n + 1) / 2) - 1
+
+    for i in range(m + 1):
+        max_heapify(a, m - i, n)
+\end{lstlisting}
+
+\begin{inv*}
+At the start of each iteration of the \textbf{for} loop of lines $4-5$, every subtree
+rooted at $i > \lfloor\frac{n+1}{2}\rfloor - 1$ is a max-heap.
+\end{inv*}
+
+\begin{rtime*}
+$\Theta(n)$.
+\end{rtime*}
+
+\subsubsection{Sorting with Max-Heaps}
+
+\begin{lstlisting}[language=Python]
+def heapsort(a, n):
+    build_max_heap(a, n)
+
+    for i in range(n, 0, -1):
+        a[0], a[i] = a[i], a[0]
+        n = n - 1
+        max_heapify(a, 0, n)
+\end{lstlisting}
+
+\begin{rtime*}
+$\Theta(n\lg n)$.
+\end{rtime*}
+
+\subsection{Advantages and Disadvantages}
+
+\textbf{Advantages:}
+\begin{enumerate}
+\item Better running time.
+\item In place sorting.
+\end{enumerate}
+
+
+\section{Binary Search Trees}
+
+\subsection{The Problem}
+
+Sorting problem.
+
+\subsection{Data Structure}
+
+A binary search tree is a binary tree with the property: for a node $x$, if $y$ is a
+node in the left subtree of $x$, then $y.key \leq x.key$; if $y$ is a node in the
+right subtree of $x$, then $y.key \geq x.key$.
+
+\subsection{Procedures}
+
+\subsubsection{Print Keys in Sorted Order}
+
+\begin{lstlisting}[language=Python]
+def inorder_tree_walk(node):
+    if node is not None:
+        inorder_tree_walk(node.left)
+        print(node.key)
+        inorder_tree_walk(node.right)
+\end{lstlisting}
+
+\begin{rtime*}
+For a tree with $n$ nodes, it takes $\Theta(n)$.
+\end{rtime*}
+
+\subsubsection{Searching}
+
+\begin{lstlisting}[language=Python]
+def tree_search(node, k):
+    if node is None or k == node.key:
+        return node
+
+    if k < node.key:
+        return tree_search(node.left, k)
+    else:
+        return tree_search(node.right, k)
+\end{lstlisting}
+
+\begin{rtime*}
+For a tree of height $h$, it takes $\Theta(h)$.
+\end{rtime*}
+
+\subsubsection{Maximum and Minimum}
+
+\begin{lstlisting}[language=Python]
+def tree_minimum(node):
+    while node.left is not None:
+        node = node.left
+    return node
+
+
+def tree_maximum(node):
+    while node.right is not None:
+        node = node.right
+    return node
+\end{lstlisting}
+
+\begin{rtime*}
+$\Theta(h)$.
+\end{rtime*}
+
+\subsubsection{Successor and Predecessor}
+
+\begin{lstlisting}[language=Python]
+def tree_successor(node):
+    if node.right is not None:
+        return tree_minimum(node.right)
+
+    while node.parent is not None and node != node.parent.left:
+        node = node.parent
+
+    return node.parent
+
+def tree_predecessor(node):
+    if node.left is not None:
+        return tree_maximum(node.left)
+
+    while node.parent is not None and node != node.parent.right:
+        node = node.parent
+
+    return node.parent
+\end{lstlisting}
+
+\begin{rtime*}
+$\Theta(h)$.
+\end{rtime*}
+
+\subsubsection{Insertion}
+
+This procedure searches for a appropriate slot all the way down to leaves.
+
+\begin{lstlisting}[language=Python]
+def tree_insert(root, node):
+    x = root
+    y = None
+    while x is not None:
+        y = x
+        x = x.left if node.key < x.key else x.right
+    if node.key < y.key:
+        y.left = node
+    else:
+        y.right = node
+\end{lstlisting}
+
+\begin{rtime*}
+$\Theta(h)$.
+\end{rtime*}
+
+\subsubsection{Deletion}
+
+\begin{lstlisting}[language=Python]
+def tree_delete(root, node):
+    attr = "left" if node == node.parent.left else "right"
+
+    match (node.left, node.right):
+        case (None, r):
+            node.parent.__setattr__(attr, r)
+
+        case (l, None):
+            node.parent.__setattr__(attr, l)
+
+        case (l, r):
+            s = tree_successor(node)
+
+            if s == node.right:
+                s.left = node.left
+                node.parent.__setattr__(attr, s)
+            else:
+                s_attr = "left" if s == s.parent.left else "right"
+                s_r = s.right
+                s_p = s.parent
+
+                # replace `node` with `s`
+                s.left = node.left
+                s.right = node.right
+                node.parent.__setattr__(attr, s)
+
+                # replace the original `s` with its right child
+                s_p.__setattr__(s_attr, s_r)
+\end{lstlisting}
+
+\begin{rtime*}
+$\Theta(h)$.
+\end{rtime*}
+
+\end{document}
