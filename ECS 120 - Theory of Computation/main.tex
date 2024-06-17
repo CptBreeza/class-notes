@@ -1739,4 +1739,82 @@ $\forall s \in L, |s| \geq p$, \\
 \indent\indent $\forall i \geq 0$, $uv^ixy^iz \in L$.
 \end{theorem}
 
+
+\section{Turing Machine}
+
+We move on to a more powerful class of machines, \emph{Turing Machine}. Recall that a finite
+automaton can be viewed as a finite control reading an input string from left to right and can never
+read backward. A pushdown automata is a finite automaton with a stack of infinite size, but the
+stack can only be used in a restricted way. That is, we can only read the top of the stack, and can
+only write to the top of the stack.
+
+A Turing machine is a finite control with an infinite tape. There is a \emph{head} pointing to the
+current character. At the beginning, the head points to the first character on the tape. Then the
+machine starts computing. It reads the symbol under the head, write a new character under the head
+and then move the head either to the left or to the right. It is allowed that it does only the read
+and does not write, or it does not move the head. There are states in the finite control. As the
+computation going, it transitions from one state to another and hence performing different
+operations on same input. There are two special states: the \emph{accept state} and the
+\emph{reject state}. If the machine enters either of the accept state or the reject state, it
+immediately terminates, or \emph{halts}. We say the machine \emph{accepts} or \emph{rejects}
+depending on which state it enters. It is possible that for some inputs the machine never halts. It
+will keep running forever.
+
+Formally, a Turing machine is defined as follows:
+\begin{definition}
+A Turing machine, $M$, is a tuple $(Q,\Sigma,\Gamma,\delta,q_0,q_a,q_r)$ where
+\begin{itemize}
+\item $Q$ is a finite set of states
+\item $\Sigma$ is the input alphabet not containing the \emph{blank symbol \textvisiblespace}
+\item $\Gamma$ is the tape alphabet, where $\text{\textvisiblespace} \in \Gamma$ and $\Sigma
+\subseteq \Gamma$
+\item $\delta : Q \times \Gamma \mapsto Q \times \Gamma \times \{L,R\}$ is the transition function
+\item $q_0 \in Q$ is the start state
+\item $q_a \in Q$ is the accept state
+\item $q_r \in Q$ is the reject state, where $q_a \neq q_r$
+\end{itemize}
+\end{definition}
+
+To formalize how a Turing machine computes, we first formalize how to denote the state of it.
+
+A snapshot of the current state of a Turing machine consists of three components, the current state,
+the current tape contents and the position where the head points to. We call this tuple a
+\emph{configuration}. For a state $q$ and two strings $u$ and $v$, the configuration is written as
+$uqv$ indicating that the current state is $q$, the current tape contents is $uv$ and the current
+head position is at the first character of $v$.
+
+For two configurations $C_1$ and $C_2$, we say $C_1$ \emph{yields} $C_2$ if the Turing machine can
+go from $C_1$ to $C_2$ in one step. Suppose we have $a$, $b$ and $c$ in $\Gamma$, and $u$ and $v$
+in $\Gamma^\ast$ and $q_i$ and $q_j$ in $Q$. There are several cases possible:
+\begin{enumerate}
+\item $uaq_ibv$ yields $uq_jacv$ if $\delta(q_i,b)=(q_j,c,L)$
+\item $uaq_ibv$ yields $uacq_jv$ if $\delta(q_i,b)=(q_j,c,R)$
+\end{enumerate}
+
+For a special case when we want to move to the left on the leftmost position, the head just remains
+on the same position. That is $q_iav$ yields $q_jcv$ if $\delta(q_i,a)=(q_j,c,L)$. If the head is
+on the rightmost position, however, note that $uaq_i$ is equivalent to
+$uaq_i\text{\textvisiblespace}$ and there is nothing special to handle it.
+
+As we did for finite automata and pushdown automata, we define a reflexive and transitive closure
+of the yield relation. We say that $C_i$ \emph{derives} $C_j$ if it takes finite number steps from
+$C_i$ to yield $C_j$. And according the our definition above, the Turing machine halts immediately
+once it enters the accept state or the reject state. So for a Turing machine $M$ and a string $s$,
+if the start configuration $C_0$ derives the accept configuration $C_a$ on $s$, it \emph{accepts}
+$s$; if $C_0$ derives the reject configuration $C_r$, it \emph{rejects} $s$.
+
+\begin{definition}
+A language if \emph{Turing recognizable} if there is a Turing machine recognizes it.
+\end{definition}
+
+Note that if a Turing machine $M$ recognizes a language $L$, it means that $M$ halts for all
+$s \in L$ in an accept configuration. But for a $s \not\in L$, $M$ may halt in a reject
+configuration or loop forever. Sometimes we want a stronger condition that $M$ does halt in a reject
+configuration for $s \not\in L$. In this case we call $M$ \emph{decides} $s$. And for a language we
+define:
+
+\begin{definition}
+A language is \emph{Turing decidable} if there is a Turing machine decides it.
+\end{definition}
+
 \end{document}
