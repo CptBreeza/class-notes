@@ -713,4 +713,67 @@ another solution $x'$, where $x \equiv m \equiv x' \pmod{a}$ and $x \equiv n \eq
 \pmod{b}$. By lemma \ref{lemma:2.8.3} we know that $x \equiv x' \pmod{ab}$.
 \end{proof}
 
+
+\section{Graph Theory}
+
+\subsection{Simple Graph}
+
+\begin{definition}
+A graph $G$ is a tuple $(V, E)$ where
+\begin{itemize}
+\item $V$ is a non-empty set of \emph{nodes} (or \emph{vertices})
+\item $E \subseteq \{\{n,m\} \mid n,m \in V \text{ and } n \neq m\}$ is a set of edges
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+Two nodes $n$ and $m$ are adjacent if there is an edge $\{n,m\} \in E$.
+\end{definition}
+
+\begin{definition}
+An edge $e$ is \emph{incident} to a node $n$ if $n \in e$.
+\end{definition}
+
+\begin{definition}
+The \emph{degree} of a node $n$ is $|V_n|$ where $V_n = \{e \in V \mid n \in e \}$.
+\end{definition}
+
+\begin{definition}
+A graph is \emph{simple} if there are no loops and multi-edges.
+\end{definition}
+
+\begin{definition}[Graph Coloring Problem]
+Given a graph $G$ and $k$ colors, assign a color to each node so that adjacent nodes get difffernt
+colors. The minimum value of $k$ for which such a coloring exists is the \emph{chromatic number} of
+$G$, denoted by $\chi(G)$.
+\end{definition}
+
+\begin{definition}
+\emph{Basic Coloring Algorithm:}
+\begin{enumerate}
+\item order the nodes $v_1,v_2,\dots,v_n$
+\item order the colors $c_1,c_2,\dots,c_m$
+\item For $i=1,2,\dots,n$, assign the lowest legal color to $v_i$
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}
+If every node of graph $G$ has degree $\leq d$, the Basic Coloring Algorithm uses at most $d+1$
+colors.
+\end{theorem}
+
+\begin{proof}
+We prove it by induction on $n$.
+
+\textbf{Base Case:} For $n=1$, there are no edges. In this case $d = 0$ and $d+1=1$, which is
+exactly the number of colors that we need.
+
+\textbf{Inductive Case:} Assume $P(n)$ is true. Let $G=(V,E)$ be any $(n+1)$-node graph. Let $d$ be
+the max degree of $G$. Order the nodes $v_1,v_2,\dots,v_n,v_{n+1}$. We remove $v_{n+1}$ from $G$ to
+create $G'$. Then $G'$ has max degree $\leq d$. By the induction hypothesis, we can color it using
+at most $d+1$ colors. Note that $v_{n+1}$ has at most $d$ neighbors and it takes at most $d$ colors
+to color its neighbors. And we need one extra color for $v_{n+1}$, which implies we can color $G$
+with $d+1$ colors.
+\end{proof}
+
 \end{document}
