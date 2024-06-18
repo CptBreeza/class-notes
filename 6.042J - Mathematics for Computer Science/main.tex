@@ -776,4 +776,136 @@ to color its neighbors. And we need one extra color for $v_{n+1}$, which implies
 with $d+1$ colors.
 \end{proof}
 
+\begin{definition}
+A \emph{bipartite graph} is a graph together with a partition of its vertices into two sets, $L$ and
+$R$, such that every edge $L$ is incident to a vertex in $L$ and to a vertex in $R$.
+\end{definition}
+
+\subsection{Matching Problem}
+
+\begin{definition}
+Given a graph $G = (V, E)$, a \emph{matching} is a subgraph of $G$ where every node has degree $1$.
+\end{definition}
+
+\begin{definition}
+A matching is \emph{perfect} if it has size $\frac{|V|}{2}$.
+\end{definition}
+
+\begin{definition}
+The \emph{weight} of the matching $M$ is the sum of weights on the edges of $M$.
+\end{definition}
+
+\begin{definition}
+A \emph{min-weight matching} for $G$ is a perfect matching for $G$ with the min weight.
+\end{definition}
+
+\begin{definition}
+Given a matching $M$, $x,y$ form a \emph{rogue couple} if they prefer each other over their mates in
+$M$.
+\end{definition}
+
+\begin{definition}
+A matching is \emph{stable} if there are no rogue couples.
+\end{definition}
+
+\begin{definition}[Stable Marriage Problem]
+Suppose there are $N$ boys and $N$ girls. Each boy has his own ranked preference list of all girls
+and each girl has her own preference list of all boys. The goal is to find a perfect matching of
+boys and girls.
+\end{definition}
+
+\begin{definition}[The Mating Ritual]
+The procedure for finding a stable matching involves a \emph{Mating Ritual} that takes place over
+several days. The following events happen each day:
+
+\textbf{Morning:} Each boy serenades his favorite girl on the list. If a boy has no girls on his
+list, he stays home and does his math homework.
+
+\textbf{Afternoon:} Each girl who has one or more suitors says to her favorite among them, "we might
+get engaged, come back tomorrow". To other suitors, she says, "I will never marry you".
+
+\textbf{Evening:} Any boy who is told by a girl that she will never marry him, crosses that girl from
+his list.
+
+\textbf{Termination:} When a day arrives in which every girl has at most one suitor, the ritual ends
+with every girl marrying her suitor, if she has one.
+\end{definition}
+
+\begin{theorem}
+The Ritual eventually reaches the termination condition in less than $N^2+1$ days.
+\end{theorem}
+
+\begin{proof}
+By contradiction. Suppose it does not terminate in $N^2+1$ days. That is to say there is a girl who
+has more than one suitors. There are $N$ lists of $N$ names. But we have $N^2+1$ cross outs. So there
+is a contradiction.
+\end{proof}
+
+\begin{lemma}
+If a girl $G$ ever rejected a boy $B$, then $G$ has a suitor who she prefers to $B$.
+\end{lemma}
+
+\begin{proof}
+By induction on the number of days.
+
+\textbf{Base case:}  On day $0$, no one got rejected yet.
+
+\textbf{Inductive case:} Assume $P$ holds at end of day $d$. There are two cases:
+\begin{enumerate}
+\item $G$ rejects $B$ at $d+1$. Then there was someone better. That implies $P$ is true for $d+1$.
+\item $G$ rejects $B$ before $d+1$. Since $P$ is true at the end of day $d$, she has the same suitor
+or someone she prefers better at the end of day $d+1$.
+\end{enumerate}
+\end{proof}
+
+\begin{theorem}
+Everyone is married.
+\end{theorem}
+
+\begin{proof}
+By contradiction. Assume that some boy $B$ is not married. That is to say he is rejected by every
+girl. And that means every girl has a better suitor and every girl is married. That is impossible
+because the number of girls is the same as the number of boys.
+\end{proof}
+
+\begin{theorem}
+The Ritual produces a stable matching.
+\end{theorem}
+
+\begin{proof}
+By contradiction. Let $B$ and $G$ be any pair that are not married. There are several possible cases:
+\begin{enumerate}
+\item $G$ rejected $B$ because $G$ has a better suitor. $G$ marries someone better than $G$. $G$ and
+$B$ are not rogue.
+\item $G$ did not reject $B$. This means that $B$ never serenaded $G$ because $G$ is lower in $B$'s
+list than $B$'s wife. So $G$ and $B$ are not rogue.
+\end{enumerate}
+\end{proof}
+
+\begin{definition}
+Let $S \neq \emptyset$ be the set of all stable matchings. For each person $P$, \emph{the realm of
+possibility} for $P$ is $\{Q \mid \exists M \in S,\{P,Q\} \in M\}$.
+\end{definition}
+
+\begin{definition}
+A person $P$'s \emph{optimal mate} is his/her favorite from the realm of possibility. Similarly we
+can define a \emph{pessimal mate}.
+\end{definition}
+
+\begin{theorem} \label{theorem:64}
+The Ritual marries every boy to his optimal mate.
+\end{theorem}
+
+\begin{theorem}
+The Ritual marries every girl to her pessimal mate.
+\end{theorem}
+
+\begin{proof}
+By contradiction. Suppose that there exists a stable matching $M$ where there is a girl $G$ who
+marries to a boy $B$ that she likes less than her mate in the Ritual $B'$. This means that $G$
+prefers $B'$ to $B$. By theorem \ref{theorem:64} and the fact that $G$ and $B'$ are married in the
+Ritual, we know that $B'$ prefers $G$ to his mate in $M$. This means that $G$ and $B'$ are a rogue
+couple in $M$, which contradicts the stability of $M$.
+\end{proof}
+
 \end{document}
