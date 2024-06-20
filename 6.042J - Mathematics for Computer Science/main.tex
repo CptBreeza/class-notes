@@ -908,4 +908,187 @@ Ritual, we know that $B'$ prefers $G$ to his mate in $M$. This means that $G$ an
 couple in $M$, which contradicts the stability of $M$.
 \end{proof}
 
+\subsection{Spanning Trees}
+
+\begin{definition}
+A \emph{walk} is a sequence of vertices connected by edges. The \emph{length} of a walk is the number
+of the edges.
+\end{definition}
+
+\begin{definition}
+A \emph{path} is a walk in which all vertices are different from each other.
+\end{definition}
+
+\begin{lemma}
+If there exists a walk from $u$ to $v$, then there also exists a path from $u$ to $v$.
+\end{lemma}
+
+\begin{proof}
+By Well Ordering Principle. Suppose there is a walk of minimal length from $u$ to $v$. We are going
+to prove this walk is a path. Suppose by contrary that the walk is not a path. Let us do a case
+analysis on the length $k$ of the walk:
+\begin{enumerate}
+\item $k=0$. This is path.
+\item $k=1$. The walk contains two different nodes and therefore it is a path.
+\item $k \geq 2$. Suppose the walk is not a path. Then there is vertex occurred twice along the walk.
+This means that there is a loop containing the vertex. Remove the loop and what's left is also a walk
+from $u$ to $v$. This walk has a less length than the original one, which contradicts to our
+assumption that the walk is a minimal one.
+\end{enumerate}
+\end{proof}
+
+\begin{corollary}
+The shortest walk between a pair of vertices is a path.
+\end{corollary}
+
+\begin{definition}
+Two vertices $u$ and $v$ are \emph{connected} if there is path from $u$ to $v$.
+\end{definition}
+
+\begin{definition}
+A graph is connected if every pair of vertices in the graph are connected.
+\end{definition}
+
+\begin{definition}
+A \emph{closed walk} is a walk which starts and ends at the same vertex.
+\end{definition}
+
+\begin{definition}
+A closed walk of length $k$ is said to be a \emph{cycle} if $k \geq 3$ and $v_0,v_1,\dots,v_{k-1}$
+are all different.
+\end{definition}
+
+\begin{definition}
+A \emph{tree} is a connected acyclic graph.
+\end{definition}
+
+\begin{definition}
+A \emph{leaf} in a tree is a node with degree $1$.
+\end{definition}
+
+\begin{lemma}
+Any connected subgraph of a tree is also a tree.
+\end{lemma}
+
+\begin{proof}
+By contradiction. Suppose the connected subgraph is not a tree. That is to say there is a cycle in
+it. If there is a cycle in the subgraph, the cycle must also be in the graph, which contradicts our
+assumption that the graph is a tree.
+\end{proof}
+
+\begin{theorem}
+If a tree has at least two vertices, it has at least two leaves.
+\end{theorem}
+
+\begin{proof}
+Let $v_1,\dots,v_m$ be the sequence of vertices on a longest path in the tree. Then $m \geq 2$, since a
+tree with two vertices must contain at least one edge. There cannot be an edge $\{v_1,v_i\}$ for
+$2 < i \leq m$; otherwise vertices $v_1,\dots,v_i$ would form a cycle. Furthermore, there cannot be an
+edge $\{u,v_1\}$ where $u$ is not on the path; otherwise, we could make the path longer. Therefore, the
+only edge incident to $v_1$ is $\{v_1,v_2\}$, which means that $v_1$ is a leaf. By a symmetric argument,
+$v_m$ is also a leaf.
+\end{proof}
+
+\begin{lemma}
+A tree with $n$ vertices has $n-1$ edges.
+\end{lemma}
+
+\begin{proof}
+By induction on $n$.
+
+\textbf{Base case:} For $n=1$, there is no edges in a $1$-node tree.
+
+\textbf{Inductive case:} Assume $P(n)$ holds. Let $T$ be a tree that has $n+1$ vertices. Let $v$ be a
+leaf of the tree. Remove $v$ and we get a connected subgraph of $T$, which is a tree with $n$ nodes.
+By the induction hypothesis this subtree has $n-1$ edges. Re-attach $v$ back to the tree, since it is
+a leaf, we need one extra edge. So there are $n$ edges, which means that $P(n+1)$ is true.
+\end{proof}
+
+\begin{definition}
+A \emph{spanning tree} (ST) of a connected graph is a subgraph that is a tree with the same vertices
+as the graph.
+\end{definition}
+
+\begin{theorem}
+Every connected graph has a spanning tree.
+\end{theorem}
+
+\begin{proof}
+By contradiction. Suppose that there is a connected graph $G$ that has no spanning tree. Let $T$ be
+a connected graph of $G$ with the same vertices as $G$ and with the smallest number of edges
+possible. Since $T$ is not a spanning tree, there is a cycle. Let $e$ be an edge on the cycle and
+$x,y$ are two vertices. There are two cases for $x$ and $y$:
+\begin{enumerate}
+\item The path from $x$ to $y$ does not contain $e$. In this case we can remove $e$ and $x$ and $y$
+are still connected.
+\item The path from $x$ to $y$ contains $e$. Since $e$ is an edge on the cycle, after removing $e$
+there is still a path from $x$ to $y$ and they are connected.
+\end{enumerate}
+We have shown that all vertices in $G$ are still connected after remove $e$ from $T$, which
+contradicts our assumption that $T$ is the smallest connected graph.
+\end{proof}
+
+\begin{definition}
+A \emph{min-weight spanning tree (MST)} of an edge-weighted graph is the spanning tree of $G$ with
+the smallest possible sum of edge weights.
+\end{definition}
+
+\begin{definition}[Algorithm to Find an MST]
+Grow a subgraph one edge at a time by adding the minimum-weight edge possible to the subgraph,
+making sure that we have an acyclic subgraph at each step.
+\end{definition}
+
+\begin{lemma} \label{lemma:83}
+Let $S$ consists of the first $m$ edges selected by the algorithm. Then there exists some MST $T=
+(V,E)$ for $G$ such that $S \subseteq E$.
+\end{lemma}
+
+\begin{proof}
+By induction on $m$.
+
+\textbf{Base case:} For $m=0$ it is correct.
+
+\textbf{Inductive case:} Suppose $P(m)$ holds. Let $e$ denote the edge added in the $(m+1)$th step.
+Let $S$ denote the first $m$ selected edges. Let $T'=(V,E')$ be the spanning tree guaranteed by the
+induction hypothesis. There are two cases for $e$ and $E'$:
+\begin{enumerate}
+\item $e \in E'$. We are done.
+\item $e \not\in E'$. We need to find a different MST that contains $S$ and $e$.
+\end{enumerate}
+
+Since $T'$ is a tree, adding an edge that is not in the tree would form a cycle. Moreover, the cycle
+cannot contain only edges in $S$, since $e$ was chosen so that together with the edges in $S$ it does
+not form a cycle. This implies the cycle contains an edge $e'$ of $E'-S$. Now we know that the weight
+of $e'$ is no greater than $e$ and since $e' \in E'$ it cannot make a cycle with $S$.
+
+Now we will make an MST that contains $S \cup \{e\}$. Let $T''=(V,E'')$ where $E''=(E'-\{e'\})\cup
+\{e\}$. And we claim that $T''$ is an MST. Now we prove the claim.
+
+First, we show that $T''$ is a spanning tree. $T''$ is acyclic because it is form by removing an edge
+from the only cycle in $T' \cup \{e\}$. $T''$ is connected because the edge we deleted from $T'$ was on
+a cycle. And $T''$ contains all the nodes of $G$. It is a spanning tree.
+
+Then, we show that $T''$ is an MST. We build $T''$ by adding $e$ and removing $e'$. And by the
+definition of the algorithm, $e$ is no greater than $e'$, so the weight of $T''$ is no greater than
+$T'$, and thus $T''$ is an MST.
+
+Now we have shown that $T''$ is an MST, and $S \cup \{e\} \subseteq E''$. So $P(m+1)$ holds. Our proof
+by induction is done.
+\end{proof}
+
+\begin{theorem}
+For any connected edge-weighted graph $G$, the algorithm gives an MST for $G$.
+\end{theorem}
+
+\begin{proof}
+We need to show that the algorithm terminates and it creates an MST.
+
+To show that the algorithm terminates, we need to show that it never gets stuck. By lemma
+\ref{lemma:83}, as long as there are fewer than $n-1$ edges picked, there exists some edge in $E-S$ and
+so there is an edge we can add to $S$ without forming a cycle.
+
+To show that the algorithm creates an MST, following the last paragraph, once $m=n-1$, $S$ is a MST by
+lemma \ref{lemma:83}.
+\end{proof}
+
 \end{document}
