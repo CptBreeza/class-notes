@@ -1804,7 +1804,12 @@ if the start configuration $C_0$ derives the accept configuration $C_a$ on $s$, 
 $s$; if $C_0$ derives the reject configuration $C_r$, it \emph{rejects} $s$.
 
 \begin{definition}
-A language if \emph{Turing recognizable} if there is a Turing machine recognizes it.
+A language if \emph{Turing recognizable} if there is a Turing machine $M$ recognizes it. We write
+$L(M) = L$.
+\end{definition}
+
+\begin{definition}
+A language $L$ is recursively enumerable if there exists a Turing machine $M$ such that $L(M) = L$.
 \end{definition}
 
 Note that if a Turing machine $M$ recognizes a language $L$, it means that $M$ halts for all
@@ -1816,5 +1821,213 @@ define:
 \begin{definition}
 A language is \emph{Turing decidable} if there is a Turing machine decides it.
 \end{definition}
+
+\section{Variants of Turing Machines}
+
+There are numerous alternative definitions of Turing machines and each of them has the same power
+with the ordinary Turing machines we defined in last section. For example, for a transition in a
+Turing machine, the head could just stay put rather than moving to the left or right.
+
+\subsection{Multitape Turing Machines}
+
+A \emph{multitape Turing machine} is like an ordinary Turing machine with several tapes. Each tape
+has its own head for reading and writing. The transition function is like
+\[
+  \delta: Q \times \Gamma^k \mapsto Q \times \Gamma^k \times \{L,R,S\}^k
+\]
+
+\subsection{Nondeterministic Turing Machines}
+
+As we did for finite automata and pushdown automata, Turing machines can also be extended to have
+nondeterministic behaviours. To be specific, the transition function of a nondeterministic Turing
+machine is like
+\[
+  \delta: Q \times \Gamma \mapsto \mathcal{P}(Q \times \Gamma \times \{L,R\})
+\]
+
+\subsection{Church-Turing Thesis}
+
+The \emph{Church-Turing Thesis} says that our intuitive notion of algorithms (computations) is equal
+to that of a Turing machine.
+
+\subsection{Encoding Problems}
+
+Problems can be encoded into strings. For example, we want to know whether a polynomial of one
+variable $x$ has an integer root. We can encode the polynomial $p$ into a string $\langle p
+\rangle$ and feed it into a Turing machine $M$. Then $M$ enumerates integers in the order $0,1,-1,
+2,-2,\dots$, substitute $x$ with the integer and test if the polynomial equals to $0$. If it does,
+$M$ accepts the string $\langle p \rangle$, which means that $p$ has an integer root. So the
+language $L = \{\langle p \rangle \mid p \text{ is a polynomial over } x \text{ with an integer
+root}\}$ is Turing-recognizable. In this case, without extra knowledge, the algorithm given to test
+whether a polynomial over $x$ has an integer root is recognizable but not decidable.
+
+\section{Decidable and Undecidable Problems}
+
+In this section we give some examples on decidability.
+
+Let us begin with a simple decidable problem. For a DFA $D$ and a string $w$, is there a Turing
+machine deciding whether $D$ accepts $w$?
+
+\begin{theorem}
+Let $A_{DFA} = \{\langle D,w \rangle \mid D \text{ is a DFA that accepts } w\}$. $A_{DFA}$ is
+decidable.
+\end{theorem}
+
+\begin{proof}
+We construct a Turing machine $M$ working as follows. On input $\langle D,w \rangle$, $M$ simulates
+$M$ on $w$. $M$ accepts $\langle D,w \rangle$ if and only if $D$ accepts $w$. As DFAs are deciders,
+$M$ is a decider.
+\end{proof}
+
+And with no surprise, there is also a Turing machine which is a decider for CFGs:
+
+\begin{theorem}
+let $A_{CFG} = \{\langle G \rangle \mid G \text{ is a context free grammar that generates } w\}$.
+$A_{CFG}$ is decidable.
+\end{theorem}
+
+\begin{theorem}
+Let $A_{TM} = \{\langle M,w \rangle \mid M \text{ is a Turing machine and } M \text{ accepts } w\}$.
+$A_{TM}$ is undecidable.
+\end{theorem}
+
+\section{Reducibility}
+
+\subsection{Many-One Reduction}
+
+\begin{definition}
+For two languages $A$ and $B$, we say that $A$ \emph{many-one reduces} to $B$, denoted
+$A \leq_m B$, iff there exists a Turing-computable function $f$ such that
+$x \in A \Leftrightarrow f(x) \in B$.
+\end{definition}
+
+\begin{proposition}
+Suppose $A$ many-one reduces to $B$. If $B$ is decidable, $A$ is also decidable.
+\end{proposition}
+
+\begin{proof}
+If $B$ is decidable then there is a decider $M_B$ for $B$. For any string $x \in A$, we compute
+$f(x) \in B$ and run $M_B$ to decide if $f(x)$ is in $B$. And by the definition of many-one
+reduction, if $f(x) \in B$, then $x \in A$. If $f(x) \not\in B$, then $x \not\in A$. That is to say
+we have a decider for $A$.
+\end{proof}
+
+\begin{corollary}
+Suppose $A$ many-one reduces to $B$. If $A$ is not decidable, $B$ is also not decidable.
+\end{corollary}
+
+We can use this corollary to show that a language is undecidable. We already know a undecidable
+language $A_{TM}$. If $A_{TM}$ many-one reduces to $L$, then $L$ must be undecidable.
+
+\begin{corollary}
+Suppose $A$ many-one reduces to $B$. If $B$ is Turing-recognizable, $A$ is also Turing-recognizable.
+\end{corollary}
+
+\begin{corollary}
+Suppose $A$ many-one reduces to $B$. If $A$ is not Turing-recognizable, $B$ is also not
+Turing-recognizable.
+\end{corollary}
+
+\begin{corollary}
+Suppose $A$ many-one reduces to $B$. If $B$ is co-Turing-recognizable, $A$ is also
+co-Turing-recognizable.
+\end{corollary}
+
+\begin{corollary} \label{corollary:43}
+Suppose $A$ many-one reduces to $B$. If $A$ is not co-Turing-recognizable, $B$ is also not
+co-Turing-recognizable.
+\end{corollary}
+
+One way to remember this is that as the notation $\leq_m$ suggests, if $A \leq_m B$, $B$ is a
+problem harder than $A$. It is at least as hard as $A$. To solve $A$, we need to first solve $B$.
+And if the harder problem can be solved, so does the simpler one. If we cannot even solve the
+simpler problem, then surely we cannot solve the harder one.
+
+\subsection{An Example: The Halting Problem}
+
+Consider this language
+\[
+  BTHP = \{\langle M \rangle \mid M \text{ is a TM and } M \text{ halts on blank tape}\}
+\]
+
+We claim that this $BTHP$ is undecidable. First, we note that $BTHP$ is Turing-recognizable. For a
+TM $M_{BTHP}$, it simulates the input TM $M$ on a blank tape and see if it halts. $M_{BTHP}$ accepts
+if $M$ halts. So to show that $BTHP$ is undecidable, we need to show that it is not
+co-Turing-recognizable. By corollary \ref{corollary:43}, if we can find a language $A$ that is not
+co-Turing-recognizable and find a many-one reduction from $A$ to $BTHP$, then we would have shown
+that $BTHP$ is not co-Turing-recognizable.
+
+Since $A_{TM}$ is Turing-recognizable and undecidable, it is not co-Turing-recognizable. Let us try
+to see if we can many-one reduce $A_{TM}$ to $BTHP$. $M_{TM}$ is such a TM that
+\begin{itemize}
+\item accepts if $M$ accepts $w$
+\item rejects if $M$ rejects $w$
+\end{itemize}
+
+Can we build a TM $M_{BTHP}$ that helps us to compute $M_{TM}$? That is to say that, can we build
+such a machine $M_{BTHP}$ that accepts if $M'$ halts on the blank tape, and $M'$ has the following
+properties:
+\begin{itemize}
+\item $M'$ halts on the blank tape if $M$ accepts $w$
+\item $M'$ loops if $M$ rejects $w$
+\end{itemize}
+
+There is a way to build $M'$ out from $M$ and $w$. For any input $k$, $M'$ just simulates $M$ on $w$
+and accepts if $M$ accepts $w$. Note that this simulation does not depend on $k$ and, in fact, does
+not use $k$ at all. So $M'$ accepts whatever $k$, including the blank tape, if $M$ accepts $w$. And
+$M'$ loops if $M$ rejects $w$. Although there is no way for $M'$ to test if $M$ loops on $w$, if
+$M$ does loop on $w$, $M'$ loops as well. So this construction of $M'$ works.
+
+Since we can many-one reduce $A_{TM}$ to $BTHP$, by corollary \ref{corollary:43}, we know that
+$BTHP$ is not co-Turing-recognizable. Combined with the fact that $BTHP$ is Turing-recognizable,
+we know that $BTHP$ is undecidable.
+
+\subsection{An Example: FINITE}
+
+Consider this language
+\[
+  FINITE = \{\langle M \rangle \mid M \text{ is a TM and } L(M) \text{ is finite}\}
+\]
+
+It seems that $FINITE$ is neither Turing-recognizable nor co-Turing-recognizable. To show that it is
+not Turing-recognizable, we need to find a many-one reduction from $\bar{A}_{TM}$ to it. To show
+that it is not co-Turing-recognizable, we need to find a many-one reduction from $A_{TM}$ to it.
+
+\subsubsection{First Part: Non-Turing-Recognizable}
+
+Let us show that $\bar{A}_{TM}$ many-one reduces to $FINITE$. To be specific, we want to build a TM
+$M_{FINITE}$ that helps us to compute $\bar{M}_{TM}$. That is to say that, we want to build a
+machine $M_{FINITE}$ that accepts if $L(M')$ is finite and $M'$ has the following properties
+\begin{itemize}
+\item $L(M')$ is finite if $M$ does not accept $w$
+\item $L(M')$ is infinite if $M$ accepts $w$
+\end{itemize}
+
+There is a way to build $M'$ out from $M$ and $w$. For any input $x$, $M'$ simulates $M$ on $w$ and
+accepts if $M$ accepts $w$. If $M$ rejects $w$, $M'$ rejects. That is, if $M$ accepts $w$, $M'$
+accepts all strings and thus infinite. If $M$ does not accept $w$, $M'$ either rejects or loops and
+in this case, it does not accept any string and thus $L(M) = \emptyset$.
+
+\subsubsection{Second Part: Non-Co-Turing-Recognizable}
+
+Let us show that $A_{TM}$ many-one reduces to $FINITE$. This time we want $M'$ to have the following
+properties:
+\begin{itemize}
+\item $L(M')$ is finite if $M$ accepts $w$
+\item $L(M')$ is infinite if $M$ does not accept $w$
+\end{itemize}
+
+There is a way to build $M'$ out from $M$. For any input $k$, run $M$ on $w$ for $|k|$ steps, and
+\begin{itemize}
+\item reject if $M$ has accepted by now
+\item accept if $M$ has rejected by now
+\item accept if $M$ has neither accepted nor rejected by now
+\end{itemize}
+
+To see why this construction works, let us first check for the case in which $M$ accepts $w$. Assume
+$M$ accepts $w$ on the $x$th step. For any input $k$ of $M'$ where $|k| \leq x$, $M'$ accepts $k$.
+For $|k| > x$, $M'$ rejects $k$. This is to say that if $M$ accepts $w$, $M'$ accepts each string
+whose length is less than $x$. $L(M')$ is finite. If $M$ does not accept $w$, then $M'$ would accept
+every input $k$. In this case $L(M')$ is infinite.
 
 \end{document}
