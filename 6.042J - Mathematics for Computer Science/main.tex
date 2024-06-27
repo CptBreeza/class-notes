@@ -1091,4 +1091,183 @@ To show that the algorithm creates an MST, following the last paragraph, once $m
 lemma \ref{lemma:83}.
 \end{proof}
 
+\subsection{Euler Tour and Directed Graph}
+
+\begin{definition}
+An \emph{Euler tour} is a walk that traverses every edges exactly once and starts and finishes at
+the same vertex.
+\end{definition}
+
+\begin{theorem}
+A connected graph has Euler tour iff every vertex of the graph has even degree.
+\end{theorem}
+
+\begin{proof}
+First, let us prove the only if direction. Assume $G=(V,E)$ has an Euler tour. Suppose there is a
+Euler tour starts and finishes at $v_0$. For any vertex $v_k$ in the Euler tour, it may occur
+multiple times. Everytime it occurs, there are two edges incident to it. Since these edges are in
+a Euler tour, they are all different and they are all edges that are incident to $v_k$. So the
+degree of $v_k$ is two times the occurrences of $v_k$, which is an even number.
+
+Then, let us prove the if direction. Assume for $G=(V,E)$, the degree of every vertex if even. Let
+$w = v_0v_1 \dots v_k$ be the longest walk that traverses no edge more than once. We claim that
+$w$ is an Euler tour.
+
+Suppose that there is an edge between $v_k$ and $u$ that is not in the walk. We can attach the edge
+to the walk and obtain a longer walk, which contradicts our assumption that $w$ is the longest
+walk. So edges incident to $v_k$ are used in $w$.
+
+Now we show that $v_k=v_0$. Suppose that $v_k \neq v_0$, then $v_k$ has an odd degree in $w$.
+Since we have shown that all edges that are incident to $v_k$ are in $w$, $v_k$ must also has an
+odd degree in $G$, which contradict our assumption that every vertex of the graph has even degree.
+So $v_k$ must be $v_0$.
+
+Suppose $w$ is not an Euler tour. $G$ is connected so there exists an edge that is not in $w$ but
+incident to some vertex in $w$. Let $u$-$v_i$ be this edge. Then we can build a longer walk
+$uv_iv_{i+1} \dots v_kv_0 \dots v_i$, which contradicts our assumption that $w$ is the longest walk
+of $G$. So $w$ must be an Euler tour.
+\end{proof}
+
+\begin{theorem}
+Let $G=(V,E)$ be an $n$-node graph. Let $A$ be the adjacent matrix of $G$. Let $p_{i,j}^k$ be the
+number of directed walks from $v_i$ to $v_j$ of length $k$. Then $A^k = \{p_{i,j}^k\}$.
+\end{theorem}
+
+\begin{proof}
+By induction on $k$. Assume $a_{i,j}^k$ be the $(i,j)$th element of $A^k$, we want to prove that
+$a_{i,j}^k=p_{i,j}^k$.
+
+\textbf{Base case:} $k=1$. The only walk of length $1$ from $v_i$ to $v_j$ is an edge. If there is
+an edge, $p_{i,j}^k=1$. If there is no edge, $p_{i,j}^k=0$. In this case, $p_{i,j}^k$ is exactly
+the definition of the adjacent matrix.
+
+\textbf{Inductive case:} Assume $P(m)$. Note that a path from $i$ to $j$ of length $m+1$ can be
+obtained by attaching one more node $h$ to a path from $i$ to $h$ of length $m$ where there exists
+an edge from $h$ to $j$. And we sum up for all $h$s to get the final result:
+\begin{align*}
+p_{i,j}^{k+1} &= \sum_{h\text{ that there exists an edge from }h\text{ to }j} p_{ih}^k \\
+&= \sum_{h=1}^n p_{ih}^k \cdot a_{hj} \\
+&= \sum_{h=1}^n a_{ih}^k \cdot a_{hj}
+\end{align*}
+Note that the last summation is exactly the definition of matrix multiplication.
+
+\end{proof}
+
+\begin{definition}
+A digraph $G=(V,E)$ is \emph{strongly connected} if for all $u,v \in V$ there exists a directed
+path from $u$ to $v$ in $G$.
+\end{definition}
+
+\begin{definition}
+A directed graph is called a \emph{directed acyclic graph (DAG)} if it does not contain any
+directed cycles.
+\end{definition}
+
+\begin{definition}
+A \emph{directed Hamiltonian path} is a directed path that visits every vertex exactly once.
+\end{definition}
+
+\begin{theorem}
+Every tournament graph contains a directed Hamiltonian path.
+\end{theorem}
+
+\begin{proof}
+By induction on the number of nodes.
+
+\textbf{Base case:} $n=1$ works.
+
+\textbf{Inductive case:} Assume $P(m)$. Take out one node $v$ and the remaining graph is an
+$n$-node tournament graph. Let $w=v_0 \dots v_k$ be the directed Hamiltonian path guaranteed by the
+induction hypothesis. There are two cases:
+\begin{itemize}
+\item $v$ beats $v_0$. We can insert $v$ before $v_0$ and obtain a directed Hamiltonian path.
+\item $v_0$ beats $v$. Let $i$ be the smallest number that $v$ beats $v_i$. Since $v$ beats $v_i$
+and $v_{i-1}$ beats $v$, we can insert $v$ between $v_{i-1}$ and $v_i$ and obtain a directed
+Hamiltonian path.
+\end{itemize}
+\end{proof}
+
+\subsection{Relations and Partial Orders}
+
+\begin{definition}
+A \emph{relation} from a set $A$ to a set $B$ is a subset $R \subseteq A \times B$.
+\end{definition}
+
+\begin{definition}
+A relation on $A$ is
+\begin{itemize}
+\item \emph{reflexive} if $(x,x) \in R$ for all $x \in A$
+\item \emph{symmetric} if $(x,y) \in R \Rightarrow (y,x) \in R$ for all $x,y \in A$
+\item \emph{antisymmetric} if $(x,y) \in R \wedge (y,x) \in R \Rightarrow x = y$ for all
+$x,y \in A$
+\item \emph{transitive} if $(x,y) \in R \wedge (y,z) \in R \Rightarrow (x,z) \in R$ for all
+$x,y,z \in A$
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+An \emph{equivalence relation} is a relation that is reflexive, symmetric and transitive.
+\end{definition}
+
+\begin{definition}
+The equivalence class of $x \in A$ is the set of all elements in $A$ that is equivalent to $x$ with
+respect to $R$.
+\end{definition}
+
+\begin{definition}
+A \emph{partition} of $A$ is a collection of disjoint nonempty sets $A_1,\dots,A_n \subseteq A$,
+where $A_1\cup\dots\cup A_n = A$.
+\end{definition}
+
+\begin{theorem}
+The equivalence classes of an equivalence relation on a set $A$ form a partition of $A$.
+\end{theorem}
+
+\begin{definition}
+A \emph{partial order} is a relation that is reflexive, antisymmetric and transitive.
+\end{definition}
+
+\begin{definition}
+A Hasse diagram for a poset $(A,\leq)$ is a digraph with vertices set $A$ and edge set $\leq$
+without all self-loops and all edges implied by transitivity.
+\end{definition}
+
+\begin{theorem}
+A poset has no directed cycles other than self-loops.
+\end{theorem}
+
+\begin{proof}
+By contradiction. Suppose there is a cycle of $n$ distinct elements in $A$. Since $a_1 \leq a_n$
+and $a_n \leq a_1$, $a_1$ must be equal to $a_n$, which contradicts our assumption that $a_1$ is
+distinct to $a_n$.
+\end{proof}
+
+\begin{corollary}
+A Hasse diagram is acyclic.
+\end{corollary}
+
+\begin{definition}
+A \emph{total order} is a partial order in which every pair of elements is comparable.
+\end{definition}
+
+\begin{proposition}
+The Hasse diagram of a total order is a straight line.
+\end{proposition}
+
+\begin{definition}
+A \emph{topological sort} of a poset is a total order $(A,\leq_T)$ such that $\leq \in \leq_T$.
+\end{definition}
+
+\begin{definition}
+$x \in A$ is called \emph{minimal} if there is no $y \neq x$ such that $y \leq x$.
+\end{definition}
+
+\begin{lemma}
+Every finite poset has a minimal element.
+\end{lemma}
+
+\begin{theorem}
+Every finite poset has a topological sort.
+\end{theorem}
+
 \end{document}
