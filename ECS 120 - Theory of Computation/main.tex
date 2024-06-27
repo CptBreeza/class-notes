@@ -2030,4 +2030,161 @@ For $|k| > x$, $M'$ rejects $k$. This is to say that if $M$ accepts $w$, $M'$ ac
 whose length is less than $x$. $L(M')$ is finite. If $M$ does not accept $w$, then $M'$ would accept
 every input $k$. In this case $L(M')$ is infinite.
 
+\section{More on Reduction}
+
+\subsection{Languages That Are Neither Recognizable Nor Co-Recognizable}
+
+We have seen examples of Turing-recognizable languages and co-Turing-recognizable languages. It seems
+that Turing machine is so powerful that any language may be either Turing-recognizable or
+co-Turing-recognizable. In fact, there are many languages that are neither Turing-recognizable
+nor co-Turing-recognizable. We can count how many such languages are there.
+
+First, note that there are countably infinite Turing-recognizable languages, and countably infinite
+co-Turing-recognizable languages. The reason is that Turing-machines, which are able to be encoded
+by finite strings, are countable. But the set of all languages, $\mathcal{P}(\Sigma^\ast)$ is
+uncountable. So there are uncountably languages that are neither Turing-recognizable nor
+co-Turing-recognizable.
+
+\subsection{An Example Concerning CFL}
+
+Consider the following language
+\[
+  L = \{\langle M \rangle \mid L(M) \text{ is a CFL}\}
+\]
+
+We claim that $L$ is neither Turing-recognizable nor co-Turing-recognizable. Let us prove it.
+
+\subsubsection{First Part: Non-Co-Turing-Recognizable}
+
+Let us show that $A_{TM}$ many-one reduces to $L$. We want to build a TM $M_L$ that helps us to
+compute $A_{TM}$. That is to say, $M_L$ accepts if $L(M')$ is a CFL and $M'$ has the following
+properties:
+\begin{itemize}
+\item $L$ is a CFL if $M$ accepts $w$
+\item $L$ is not a CFL if $M$ does not $w$
+\end{itemize}
+
+There is a way to build $M'$ out from $M$ and $w$. First, fix a non-CF language such as
+$N = \{a^nb^nc^n \mid n \in \mathbb{N}\}$. Then, we can build $M'$ such that
+\begin{itemize}
+\item for any input $x$, accept if $x \in N$
+\item run $M$ on $w$, accept if $M$ accepts $w$
+\item reject if $M$ rejects $w$
+\end{itemize}
+
+$M'$ accepts a non-CF language unconditionally. For input $x$ that is not in that non-CF
+language, it simulates $M$ to decide whether or not $x$ should be accepted. If $M$ accepts
+$w$, then every (other) $x$ is accepted, consequently $\Sigma^\ast$ is accepted by $M'$.
+If $M$ does not accept $w$, no matter it rejects or loops, no additional strings are
+accepted. Eventually $M'$ accepts only the initially accepted non-CF language.
+
+\subsubsection{Second Part: Non-Turing-Recognizable}
+
+Let us show that $\bar{A}_{TM}$ many-one reduces to $L$. That is to say we want to build $M'$ such
+that
+\begin{itemize}
+\item $L$ is a CFL if $M$ does not accept $w$
+\item $L$ is not a CFL if $M$ accepts $w$
+\end{itemize}
+
+There is a way to build $M'$ out from $M$ and $w$. For any input $x$
+\begin{itemize}
+\item accept if $M$ accepts $w$ and $x \in \{a^nb^nc^n \mid n \in \mathbb{N}\}$
+\item reject if $M$ rejects
+\end{itemize}
+
+\subsection{Rice's Theorem}
+
+\begin{theorem}
+Let $P$ be any nontrivial property of the language of a Turing machine and \\
+$L_P = \{\langle M \rangle \mid M \text{ is a Turing machine and } P(L(M))\}$. $L_P$ is
+undecidable.
+\end{theorem}
+
+\section{P and NP}
+
+\subsection{Running Time of Turing Machine}
+
+\begin{definition}
+Let $M$ be a deterministic Turing machine that halts on all inputs. The \emph{running time} or
+\emph{time complexity} is the function $f: \mathbb{N} \mapsto \mathbb{N}$, where $f(n)$ is the
+maximum number of steps that $M$ uses on any input of length $n$.
+\end{definition}
+
+\begin{definition}
+Let $t: \mathbb{N} \mapsto \mathbb{R}^+$ be a function. Define the \emph{time complexity class},
+$TIME(t(n))$, to be the collection of all languages that are decidable by an $O(t(n))$ time Turing
+machine.
+\end{definition}
+
+\begin{definition}
+Let $N$ be a nondeterministic Turing machine that is a decider. The \emph{running time} of $N$ is
+is the function $f: \mathbb{N} \mapsto \mathbb{N}$, where $f(n)$ is the maximum number of steps
+that $N$ uses on any branch of its computation on any input of length $n$.
+\end{definition}
+
+\subsection{The Class P}
+
+\begin{definition}
+\textbf{P} is the class of languages that are decidable in polynomial time on a deterministic
+single-tape Turing machine. In other words,
+\[
+  P = \bigcup_k TIME(n^k).
+\]
+\end{definition}
+
+\subsection{The Class NP}
+
+\begin{definition}
+The \emph{verifier} of a language $A$ is a algorithm $V$, where
+\[
+  A = \{w \mid V \text{ accepts }\langle w,c \rangle \text{ for some string }c\}.
+\]
+We measure the time of a verifier only in terms of the length of $w$, so a \emph{polynomial time
+verifier} runs in polynomial time in the length of $w$. A language $A$ is \emph{polynomially
+verifiable} if it has a polynomial time verfier.
+\end{definition}
+
+\begin{definition}
+The class \textbf{NP} is the class of languages that have polynomial time verifiers.
+\end{definition}
+
+\begin{definition}
+$\mathrm{NTIME}(t(n))$ is the set \\ $\{L \mid L \text{ is a language that is decidable by an }
+O(t(n)) \text{ time nondeterministic Turing machine}\}$.
+\end{definition}
+
+\begin{corollary}
+$\textbf{NP} = \bigcup_k \mathrm{NTIME}(n^k)$.
+\end{corollary}
+
+\subsection{N Versus NP}
+
+The question of whether $P = NP$ is one of the greatest unsolved problems in the theoretical
+computer science and contemporary mathematics.
+
+\subsection{NP Completeness}
+
+\begin{definition}
+A function $f: \Sigma^\ast \mapsto \Sigma^\ast$ is a \emph{polynomial time computable function} if
+some polynomial time Turing machine exists that halts with just $f(w)$ on the tape, when started
+with any input $w$.
+\end{definition}
+
+\begin{definition}
+A language $A$ is \emph{polynomial time many-one reducible to} language $B$, writte $A \leq_P B$,
+if a polynomial time computable function $f$ exists, where for every $w$,
+\[
+  w \in A \Leftrightarrow f(w) \in B.
+\]
+\end{definition}
+
+\begin{definition}
+A language $B$ is \emph{NP-complete} if it satisfies two conditions:
+\begin{enumerate}
+\item $B$ is in NP, and
+\item every $A$ in NP is polynomial time reducible to $B$
+\end{enumerate}
+\end{definition}
+
 \end{document}
