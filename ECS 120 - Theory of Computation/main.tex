@@ -27,7 +27,7 @@
 \subsection{Why}
 
 In this course, we model an abstract computing machine with a function
-$M : I \mapsto S$, where $I$ stands for \emph{inputs} and $S$ stands for
+$M : I \rightarrow S$, where $I$ stands for \emph{inputs} and $S$ stands for
 \emph{solutions}.
 
 It is convenient to \emph{encode} both inputs and solutions as \emph{strings} over
@@ -94,18 +94,18 @@ The concatenation of two strings $A$ and $B$, $A \cdot B$, is:
 \end{enumerate}
 \end{definition}
 
-The dot notation $A \cdot B$ for concatenation is not chosen arbitrarily. It is similar to multiplication. It is \emph{associative}, so we can write $A \cdot B \cdot C$ without parentheses. The empty string $\epsilon$ acts like the number 1 in multiplication because, for any string $A$, both $A \cdot \epsilon$ and $\epsilon \cdot A$ are equal to $A$. It is easy to prove that $length(A \cdot B) = length(A) + length(B)$ for any strings $A$ and $B$.
+The dot notation $A \cdot B$ for concatenation is not chosen arbitrarily. It is similar to multiplication. It is \emph{associative}, so we can write $A \cdot B \cdot C$ without parentheses. The empty string $\epsilon$ acts like the number 1 in multiplication because, for any string $A$, both $A \cdot \epsilon$ and $\epsilon \cdot A$ are equal to $A$. It is easy to prove that $\mathrm{length}(A \cdot B) = \mathrm{length}(A) + \mathrm{length}(B)$ for any strings $A$ and $B$.
 
 We can also build a new string by reversing an existing one:
 \begin{definition}
-The reverse of a string $A$, $rev(A)$, is:
+The reverse of a string $A$, $\mathrm{rev}(A)$, is:
 \begin{enumerate}
 \item $\epsilon$, if $A$ is $\epsilon$.
-\item $rev(A') \cdot a$, if $A$ is $a \cdot A'$.
+\item $\mathrm{rev}(A') \cdot a$, if $A$ is $a \cdot A'$.
 \end{enumerate}
 \end{definition}
 
-It is true that for any strings $A$ and $B$, $rev(A \cdot B) = rev(B) \cdot rev(A)$.
+It is true that for any strings $A$ and $B$, $\mathrm{rev}(A \cdot B) = \mathrm{rev}(B) \cdot \mathrm{rev}(A)$.
 
 \section{Languages, Deterministic Finite Automata}
 
@@ -113,7 +113,7 @@ It is true that for any strings $A$ and $B$, $rev(A \cdot B) = rev(B) \cdot rev(
 
 To work with languages, we introduce an operation called \emph{Kleene star}:
 \begin{definition}
-The \emph{Kleene star} of a language $L$, denoted by $L^\ast$, is $\{x_1x_2x_3 \dots x_n | x_i \in L\}$.
+The \emph{Kleene star} of a language $L$, denoted by $L^\ast$, is $\{x_1x_2x_3 \dots x_n \mid x_i \in L\}$.
 \end{definition}
 
 This definition is a little bit ambiguous. The ambiguity lies in the suspicious $\dots$. What if, say, $n$
@@ -121,7 +121,7 @@ is $0$?
 
 To give a more rigorous definition, first we extend the concatenation operation of strings to languages:
 \begin{definition}
-The \emph{concatenation} of two languages $L_1$ and $L_2$, $L_1 \cdots L_2$, is $\{x \cdot y | x \in L_1 and y \in L_2\}$.
+The \emph{concatenation} of two languages $L_1$ and $L_2$, $L_1 \cdots L_2$, is $\{x \cdot y \mid x \in L_1 \wedge y \in L_2\}$.
 \end{definition}
 
 And we define the \emph{power} of concatenation of languages:
@@ -190,7 +190,7 @@ A \emph{Finite Deterministic Automaton}, $M$, is a tuple $\{Q, \Sigma, \delta, q
 \begin{itemize}
 \item $Q$ is a finite nonempty set of \emph{states}.
 \item $\Sigma$ is the alphabet of the inputs.
-\item $\delta: Q \times \Sigma \mapsto Q$ is a transition function which specifies how states are changed over
+\item $\delta: Q \times \Sigma \rightarrow Q$ is a transition function which specifies how states are changed over
 inputs.
 \item $q_0 \in Q$ is the initial state.
 \item $F \subseteq Q$ is the set of accept states.
@@ -206,7 +206,7 @@ The set of all strings that a DFA $M$ accepts, $M$, is a language. We denote it 
 What does it mean for a DFA to \emph{accept} a string? First, we define an auxiliary function $\delta ^ \ast$ - an
 extension of the function $\delta$ shown above:
 \begin{definition}
-The function $\delta ^ \ast : Q \times \Sigma ^ \ast \mapsto Q$ maps a state and a string to another state.
+The function $\delta ^ \ast : Q \times \Sigma ^ \ast \rightarrow Q$ maps a state and a string to another state.
 
 For any state $q$ and string $s$, $\delta ^ \ast (q, s)$ is:
 \begin{enumerate}
@@ -221,10 +221,10 @@ Then, with this definition, we say that a DFA $M$ accepts a string $s$ iff $\del
 
 \subsection{Example 1: Can We Build a Smaller DFA?} \label{subsec:3.1}
 
-What we want: build a DFA accept the language $\{s \in \{a,b\} ^\ast \mid \text{s
-does not end with "bbb"} \}$.
+What we want: build a DFA accept the language $\{s \in \{\mathrm{a},\mathrm{b}\} ^\ast \mid s
+\text{ does not end with ``bbb''} \}$.
 
-How can we build it: instead of thinking about "not end with", first we build a DFA which accepts strings that end with "bbb". And then we "negate" it by turning the
+How can we build it: instead of thinking about ``not end with'', first we build a DFA which accepts strings that end with ``bbb''. And then we ``negate'' it by turning the
 accept states into non-accept states and non-accept states into accept states.
 That is pretty straightforward. First, we build the DFA as shown in \ref{fig:fig2}.
 
@@ -245,7 +245,7 @@ That is pretty straightforward. First, we build the DFA as shown in \ref{fig:fig
             (q3) edge[bend left,above]      node{a}   (q0)
             (q3) edge[loop,above]           node{b}   (q3);
     \end{tikzpicture}
-    \caption{a DFA which accepts all strings that end with "bbb"}
+    \caption{a DFA which accepts all strings that end with ``bbb''}
     \label{fig:fig2}
 \end{figure}
 
@@ -268,16 +268,16 @@ Then, we negate the states to get the desired DFA:
             (q3) edge[bend left,above]      node{a}   (q0)
             (q3) edge[loop,above]           node{b}   (q3);
     \end{tikzpicture}
-    \caption{a DFA which accepts all strings that do not end with "bbb"}
+    \caption{a DFA which accepts all strings that do not end with ``bbb''}
     \label{fig:fig3}
 \end{figure}
 
 Can we build a DFA accepting the same language but with fewer states? Or, if stated in another way, is this DFA a \emph{minimal} one? I don't think so. The intuition is
-this: since we want to filter (or filter out) all strings that end with "bbb", we
-need to count how many "b"s are there right before the inputs are exhausted. And for
+this: since we want to filter (or filter out) all strings that end with ``bbb'', we
+need to count how many ``b''s are there right before the inputs are exhausted. And for
 DFAs, this count is remembered, or encoded, by states. We need four states to
 represent possible counts that can distinguish different situations, where the
-string is one "b" from being accepted, two "b"s from being accepted, three "b"s from
+string is one ``b'' from being accepted, two ``b''s from being accepted, three ``b''s from
 being accepted and is already acceptable.
 
 Can we prove it? Surely we can. We prove it by the \emph{Pigeonhole Principle}.
@@ -287,23 +287,23 @@ We prove this by contradiction. Assume that we \emph{can} build such a DFA $M$
 with three states. Now consider following strings:
 \begin{align*}
 &\epsilon \\
-&b \\
-&bb \\
-&bbb
+&\mathrm{b} \\
+&\mathrm{bb} \\
+&\mathrm{bbb}
 \end{align*}
 
 Or more compactly, the strings $b^i$ where $0 \leq i \leq 3$. There are four of
-them. We feed them into $M$ and we get four states $\delta ^ \ast(q_0, b^i)$.
+them. We feed them into $M$ and we get four states $\delta ^ \ast(q_0, \mathrm{b}^i)$.
 Since $M$ has three states and there are four states produced, by the
 Pigeonhole Principle, at least two of the produced states are the same one.
 
-Let us check it. We pick two strings $b^i$ and $b^I$, where $0 \leq i < I
+Let us check it. We pick two strings $\mathrm{b}^i$ and $\mathrm{b}^I$, where $0 \leq i < I
 \leq 3$. We feed them into of $M$. The states produced after that are $\delta ^
-\ast(q_0, b^i)$ and $\delta ^ \ast(q_0, b^I)$. But we do not stop here. We then feed
-the string $b^{3-I}$. And that produces states $\delta ^ \ast(q_0, b^{i + 3 - I})$
-and $\delta ^ \ast(q_0, b^3)$. Are they the same state? The state $\delta ^
-\ast(q_0, b^3)$ is an accept state. Since $i < I$, $i + 3 - I$ is strictly less
-than $3$. That implies that state $\delta ^ \ast(q_0, b^{i + 3 - I})$ is not an
+\ast(q_0, \mathrm{b}^i)$ and $\delta ^ \ast(q_0, \mathrm{b}^I)$. But we do not stop here. We then feed
+the string $\mathrm{b}^{3-I}$. And that produces states $\delta ^ \ast(q_0, \mathrm{b}^{i + 3 - I})$
+and $\delta ^ \ast(q_0, \mathrm{b}^3)$. Are they the same state? The state $\delta ^
+\ast(q_0, \mathrm{b}^3)$ is an accept state. Since $i < I$, $i + 3 - I$ is strictly less
+than $3$. That implies that state $\delta ^ \ast(q_0, \mathrm{b}^{i + 3 - I})$ is not an
 accept state. These states are distinct.
 
 We have now proved that for any two of the four strings listed above, the states
@@ -314,7 +314,7 @@ $M$ has three states. So we cannot build such a DFA with three states.
 
 \subsection{Example 2: Can We Build That DFA At All?}
 
-What we want: build a DFA accepting the language $\{s \in \{a,b\}^\ast \mid a^nb^n
+What we want: build a DFA accepting the language $\{s \in \{\mathrm{a},\mathrm{b}\}^\ast \mid \mathrm{a}^n\mathrm{b}^n
 , n \in \mathbb{N}\}$.
 
 How can we build it: I don't think we can build it. As we have seen in the example
@@ -331,24 +331,24 @@ We prove this by contradiction. Assume that we \emph{can} build such a DFA $M$ w
 $me$ states. Now consider following strings:
 \begin{align*}
 &\epsilon \\
-&a^mb \\
-&a^mb^2 \\
+&\mathrm{a}^m\mathrm{b} \\
+&\mathrm{a}^m\mathrm{b}^2 \\
 &\dots \\
-&a^mb^m
+&\mathrm{a}^m\mathrm{b}^m
 \end{align*}
-Or more compactly, the strings $a^mb^i$ where $0 \leq i \leq m$. There are $m + 1$ of
-them. We feed them into $M$ and we get $m + 1$ states $\delta ^ \ast(q_0, a^mb^i)$.
+Or more compactly, the strings $\mathrm{a}^m\mathrm{b}^i$ where $0 \leq i \leq m$. There are $m + 1$ of
+them. We feed them into $M$ and we get $m + 1$ states $\delta ^ \ast(q_0, \mathrm{a}^m\mathrm{b}^i)$.
 Since $M$ has $m$ states and there are $m + 1$ states produced, by the Pigeonhole
 Principle, at least two of the produced states are the same one.
 
-Let us check it. We pick two strings $b^i$ and $b^I$, where $0 \leq i < I \leq m$. We
-feed them into $M$. The states produced after that are $\delta ^ \ast(q_0, a^mb^i)$
-and $\delta ^ \ast(q_0, a^mb^I)$. But we do not stop here. We then feed the string
-$b^{m-I}$. And that produces states $\delta ^ \ast(q_0, b^{i + m - I}$ and
-$\delta ^ \ast(q_0, b^m)$. Are they the same state? The state
-$\delta ^ \ast(q_0, b^m)$ is an accept state. Since $i < I$, $i + m - I$ is
+Let us check it. We pick two strings $\mathrm{b}^i$ and $\mathrm{b}^I$, where $0 \leq i < I \leq m$. We
+feed them into $M$. The states produced after that are $\delta ^ \ast(q_0, \mathrm{a}^m\mathrm{b}^i)$
+and $\delta ^ \ast(q_0, \mathrm{a}^m\mathrm{b}^I)$. But we do not stop here. We then feed the string
+$\mathrm{b}^{m-I}$. And that produces states $\delta ^ \ast(q_0, \mathrm{b}^{i + m - I}$ and
+$\delta ^ \ast(q_0, \mathrm{b}^m)$. Are they the same state? The state
+$\delta ^ \ast(q_0, \mathrm{b}^m)$ is an accept state. Since $i < I$, $i + m - I$ is
 strictly less than $m$. That implies that the state
-$\delta ^ \ast(q_0, b^{i + m - I}$ is not an accept state. These states are
+$\delta ^ \ast(q_0, \mathrm{b}^{i + m - I}$ is not an accept state. These states are
 distinct.
 
 We have now proved that for any two of the four strings listed above, the states
@@ -449,7 +449,7 @@ through first $M_1$ and then $M_2$. This is exactly what we want for a machine t
 accept $L_1 \cdot L_2$.
 
 Here is an example. $M_1$ accepts $L_1$, which is the language of all strings that start
-with "bb":
+with ``bb'':
 
 \begin{figure}[ht]
     \centering
@@ -464,11 +464,11 @@ with "bb":
             (q1) edge[above]                node{b}   (q2)
             (q2) edge[loop,above]           node{a,b} (q2);
     \end{tikzpicture}
-    \caption{a DFA which accepts all strings that start with "bb"}
+    \caption{a DFA which accepts all strings that start with ``bb''}
     \label{fig:fig4}
 \end{figure}
 
-$M_2$ accepts $L_2$, which is the language of all strings that end with "aa":
+$M_2$ accepts $L_2$, which is the language of all strings that end with ``aa'':
 
 \begin{figure}[ht]
     \centering
@@ -484,7 +484,7 @@ $M_2$ accepts $L_2$, which is the language of all strings that end with "aa":
             (q2) edge[loop,above]           node{a} (q2)
             (q2) edge[bend left,above]      node{b} (q0);
     \end{tikzpicture}
-    \caption{a DFA which accepts all strings that end with "aa"}
+    \caption{a DFA which accepts all strings that end with ``aa''}
     \label{fig:fig5}
 \end{figure}
 
@@ -513,14 +513,14 @@ Below is a DFA which accepts $L_1 \cdot L_2$:
             (q5) edge[loop,above]           node{a}   (q5)
             (q5) edge[bend left,above]      node{b}   (q3);
     \end{tikzpicture}
-    \caption{a \sout{DFA} which accepts all strings that start with "bb" and end with "aa"}
+    \caption{a \sout{DFA} which accepts all strings that start with ``bb'' and end with ``aa''}
     \label{fig:fig6}
 \end{figure}
 
 It seems to be working fine, except the transition from $q_2$ to $q_3$.
 As the question mark above the transition line in the diagram suggests,
 there is no symbol from the alphabet (which is, inferred from context,
-$\{a,b\}$) that could do the job.
+$\{\mathrm{a},\mathrm{b}\}$) that could do the job.
 
 So, why not introduce a special purpose symbol for convenience? To be
 specific, we can introduce a symbol, $\epsilon$, to indicate that the
@@ -529,7 +529,7 @@ not a coincidence. In previous discussion, we use $\epsilon$ to denote
 the empty string. Here, $\epsilon$ means \emph{nothing},
 \emph{empty symbol}.
 
-Let us fix figure \ref{fig:fig6} by putting replacing the "?" with
+Let us fix figure \ref{fig:fig6} by putting replacing the ``?'' with
 $\epsilon$:
 
 \begin{figure}[ht]
@@ -555,7 +555,7 @@ $\epsilon$:
             (q5) edge[loop,above]           node{a}   (q5)
             (q5) edge[bend left,above]      node{b}   (q3);
     \end{tikzpicture}
-    \caption{an NFA which accepts all strings that start with "bb" and end with "aa" fixed}
+    \caption{an NFA which accepts all strings that start with ``bb'' and end with ``aa'' fixed}
     \label{fig:fig7}
 \end{figure}
 
@@ -596,8 +596,8 @@ for $L^\ast$, we
 \item turn the initial state to an accept state
 \end{enumerate}
 
-Here is an example. $L$ is the language of all strings that start with "bb".
-$L^\ast$ contains all strings that start with "bb" and the empty string $\epsilon$.
+Here is an example. $L$ is the language of all strings that start with ``bb''.
+$L^\ast$ contains all strings that start with ``bb'' and the empty string $\epsilon$.
 Following the instruction above, we can bulid an NFA for $L^\ast$. The diagram
 of $M$ is shown in figure \ref{fig:fig8}.
 
@@ -623,7 +623,7 @@ of $M$ is shown in figure \ref{fig:fig8}.
 It almost works, except that it is problematic to turn the initial state to an
 accept state. Consider the example of $M$ , shown in figure \ref{fig:fig9},
 that accepts $L^\ast$ where $L$ is the language of all strings that end with
-"aa". If we turn $q_0$ to an accept state, a string like "baab" would be
+``aa''. If we turn $q_0$ to an accept state, a string like ``baab'' would be
 accepted by $M$. This is certainly not what we want.
 
 \begin{figure}[ht]
@@ -641,7 +641,7 @@ accepted by $M$. This is certainly not what we want.
             (q2) edge[bend left,above]      node{b,$\epsilon$} (q0);
     \end{tikzpicture}
     \caption{an NFA that is supposed to accept $L^\ast$ where $L$ is the language
-    of all strings that end with "aa"}
+    of all strings that end with ``aa''}
     \label{fig:fig9}
 \end{figure}
 
@@ -675,7 +675,7 @@ $M$ fixed is shown below in figure \ref{fig:fig10}.
             (q2) edge[bend left,above]      node{$\epsilon$} (q);
     \end{tikzpicture}
     \caption{an NFA that accepts $L^\ast$ where $L$ is the language of all
-    strings that end with "aa"}
+    strings that end with ``aa''}
     \label{fig:fig10}
 \end{figure}
 
@@ -711,20 +711,20 @@ These two features can be demonstrated in the following example:
             (q2) edge[bend left,above]      node{$\epsilon$} (q);
     \end{tikzpicture}
     \caption{an NFA that accepts $L^\ast$ where $L$ is the language of all
-    strings that end with "aa"}
+    strings that end with ``aa''}
     \label{fig:fig11}
 \end{figure}
 
-As we can see, the alphabet in this example is $\{a,b\}$. There are no outgoing
-transitions from $q_1$ labeled $b$. And from $q_0$, there are two outgoing
-transitions labeled $a$, one to $q_0$ and another to $q_1$.
+As we can see, the alphabet in this example is $\{\mathrm{a},\mathrm{b}\}$. There are no outgoing
+transitions from $q_1$ labeled ``b''. And from $q_0$, there are two outgoing
+transitions labeled ``a'', one to $q_0$ and another to $q_1$.
 
 \subsubsection{NFA can be non-exhaustive}
 
 If a symbol is fed, and there are no transitions outgoing labeled with it,
-we might think that the machine transitions to a "dead" state. It is a trap
+we might think that the machine transitions to a ``dead'' state. It is a trap
 where there is no input can take the machine out of it. Below is an example
-of figure \ref{fig:fig11} with an explicit "dead" state.
+of figure \ref{fig:fig11} with an explicit ``dead'' state.
 
 \begin{figure}[ht]
     \centering
@@ -746,7 +746,7 @@ of figure \ref{fig:fig11} with an explicit "dead" state.
             (q2) edge[bend left,above]     node{b} (dead)
             (dead) edge[loop,above]        node{a,b} (dead);
     \end{tikzpicture}
-    \caption{an NFA with an explicit "dead" state}
+    \caption{an NFA with an explicit ``dead'' state}
     \label{fig:fig12}
 \end{figure}
 
@@ -776,12 +776,12 @@ Here is an example. Let us find out all transitions in the example:
 \end{figure}
 
 \begin{align*}
-&\delta(q_0, a) = \{q_0,q_1\} \\
-&\delta(q_0, b) = \{q_0\} \\
-&\delta(q_1, a) = \{q_0,q_2\} \\
-&\delta(q_1, b) = \emptyset \\
-&\delta(q_2, a) = \{q_1\} \\
-&\delta(q_2, b) = \emptyset
+&\delta(q_0, \mathrm{a}) = \{q_0,q_1\} \\
+&\delta(q_0, \mathrm{b}) = \{q_0\} \\
+&\delta(q_1, \mathrm{a}) = \{q_0,q_2\} \\
+&\delta(q_1, \mathrm{b}) = \emptyset \\
+&\delta(q_2, \mathrm{a}) = \{q_1\} \\
+&\delta(q_2, \mathrm{b}) = \emptyset
 \end{align*}
 
 \subsubsection{Formal Definition}
@@ -792,7 +792,7 @@ A \emph{Nondeterministic Finite Automaton}, $M$, is a tuple $\{Q,\Sigma,\delta,q
 \begin{itemize}
 \item $Q$ is a finite nonempty set of states
 \item $\Sigma$ is the alphabet of the inputs
-\item $\delta : Q \times (\Sigma \cup \{\epsilon\}) \mapsto \mathcal{P}(Q)$
+\item $\delta : Q \times (\Sigma \cup \{\epsilon\}) \rightarrow \mathcal{P}(Q)$
 \item $q_0 \in Q$ is the initial state
 \item $F \subseteq Q$ is the set of accept states
 \end{itemize}
@@ -843,7 +843,7 @@ shown below:
 \centering
 \begin{tabular}{|c|c|c|}
 \hline
-set of states & $a$ & $b$ \\
+set of states & a & b \\
 \hline
 $\{0\}$ & $\{1\}$ & $\emptyset$ \\
 \hline
@@ -1011,12 +1011,12 @@ After the formal definition of regular languages, we specify what regular
 language a regular expression \emph{matches}. Assume regular expression
 $s_1$ matches $L_1$ and $s_2$ matches $L_2$, then:
 \begin{enumerate}
-\item $L(\epsilon) = \emptyset$
-\item $L("\$\{a\}")$ = $\{a\}$
-\item $L("\epsilon")$ = $\{\epsilon\}$
-\item $L("(\$\{s_1\} \cup \$\{s_2\})") = L_1 \cup L_2$
-\item $L("(\$\{s_1\} \cdot \$\{s_2\})") = L_1 \cdot L_2$
-\item $L("(\$\{s_1\}^\ast)") = L_1 ^ \ast$
+\item $L(\emptyset) = \emptyset$
+\item $L(a)$ = $\{a\}$
+\item $L(\epsilon)$ = $\{\epsilon\}$
+\item $L(s_1 \cup s_2) = L_1 \cup L_2$
+\item $L(s_1 \cdot s_2) = L_1 \cdot L_2$
+\item $L(s_1 ^ \ast) = L_1 ^ \ast$
 \end{enumerate}
 
 \begin{definition} \label{def:def19}
@@ -1024,14 +1024,14 @@ Fix the alphabet $\Sigma$. A string $s$ over the alphabet
 $\Sigma \cup \{\epsilon,(,),\cup,\cdot,\ast\}$ is a \emph{regular
 expression}, if either of the following is true:
 \begin{enumerate}
+\item $s = \emptyset$
+\item $s = a$ for some symbol $a \in \Sigma$
 \item $s = \epsilon$
-\item $s = "\$\{a\}"$ for some symbol $a$ in $\Sigma$
-\item $s = "\epsilon"$
-\item $s = "(\$\{s_1\} \cup \$\{s_2\})"$ where $s_1$ and $s_2$ are regular
+\item $s = s_1 \cup s_2$ where $s_1$ and $s_2$ are regular
 expressions
-\item $s = "(\$\{s_1\} \cdot \$\{s_2\})"$ where $s_1$ and $s_2$ are regular
+\item $s = s_1 \cdot s_2$ where $s_1$ and $s_2$ are regular
 expressions
-\item $s = "(\$\{s_1\}^\ast)"$ where $s_1$ is a regular expressions
+\item $s = s_1^\ast$ where $s_1$ is a regular expressions
 \end{enumerate}
 \end{definition}
 
@@ -1073,7 +1073,7 @@ the definition of regular expressions. The base cases are shown in figure
       \draw (q0) edge[above] node{any character} (q1)
             (q1) edge[loop,above] node{any character} (q1);
     \end{tikzpicture}
-    \caption{$"\epsilon"$}
+    \caption{$\epsilon$}
     \label{fig:fig21}
 \end{figure}
 
@@ -1089,7 +1089,7 @@ the definition of regular expressions. The base cases are shown in figure
             (q2) edge[loop,above] node{any character} (q2)
             (q0) edge[bend right,above] node{any character but $a$} (q2);
     \end{tikzpicture}
-    \caption{$"a"$}
+    \caption{$a$}
     \label{fig:fig22}
 \end{figure}
 
@@ -1147,7 +1147,7 @@ shown below:
       \node[state, right of=q0] (q1) {$q_1$};
       \node[state, right of=q1] (q2) {$q_2$};
 
-      \draw (q0) edge[bend left,above] node{$a \cdot b^\ast c$} (q2);
+      \draw (q0) edge[bend left,above] node{$\mathrm{a} \cdot \mathrm{b}^\ast \mathrm{c}$} (q2);
     \end{tikzpicture}
     \caption{figure \ref{fig:fig23} after setting up the new transition}
     \label{fig:fig24}
@@ -1182,7 +1182,7 @@ labeled by $"\$\{s_1\}\cup\$\{s_2\}"$.
       \node[state,initial] (q0) {$q_0$};
       \node[state, right of=q0,xshift=1cm] (q2) {$q_2$};
 
-      \draw (q0) edge[above] node{$"\$\{s_1\}\cup\$\{s_2\}"$} (q2);
+      \draw (q0) edge[above] node{$s_1 \cup s_2$} (q2);
     \end{tikzpicture}
     \caption{figure \ref{fig:fig25} after combining transitions}
     \label{fig:fig26}
@@ -1215,13 +1215,13 @@ This is better explained in an example. Consider the DFA shown below:
       \node[state,accepting,below of=q2] (q1) {$q_1$};
       \node[state,right of=q2] (q3) {$q_3$};
 
-      \draw (q0) edge[above] node{$0$} (q2)
-            (q2) edge[loop,above] node{$0$} (q2)
-            (q2) edge[bend left,above] node{$1$} (q3)
-            (q3) edge[bend left,above] node{$0$} (q2)
-            (q3) edge[bend left,above] node{$1$} (q1)
-            (q1) edge[loop,above] node{$0,1$} (q1)
-            (q1) edge[bend left,above] node{$1$} (q0);
+      \draw (q0) edge[above] node{0} (q2)
+            (q2) edge[loop,above] node{0} (q2)
+            (q2) edge[bend left,above] node{1} (q3)
+            (q3) edge[bend left,above] node{0} (q2)
+            (q3) edge[bend left,above] node{1} (q1)
+            (q1) edge[loop,above] node{0,1} (q1)
+            (q1) edge[bend left,above] node{1} (q0);
     \end{tikzpicture}
     \caption{figure \ref{fig:fig25} after combining transitions}
     \label{fig:fig27}
@@ -1246,11 +1246,11 @@ yields the DFA shown below:
       \node[state,right of=q0] (q2) {$q_2$};
       \node[state,accepting,below of=q2] (q1) {$q_1$};
 
-      \draw (q0) edge[bend left,above] node{$0$} (q2)
-            (q2) edge[loop,above] node{$0$} (q2)
-            (q2) edge[bend left,above] node{$1$} (q0)
-            (q1) edge[loop,above] node{$0,1$} (q1)
-            (q1) edge[bend left,above] node{$1$} (q0);
+      \draw (q0) edge[bend left,above] node{0} (q2)
+            (q2) edge[loop,above] node{0} (q2)
+            (q2) edge[bend left,above] node{1} (q0)
+            (q1) edge[loop,above] node{0,1} (q1)
+            (q1) edge[bend left,above] node{1} (q0);
     \end{tikzpicture}
     \caption{minimized version of figure \ref{fig:fig27}}
     \label{fig:fig28}
@@ -1289,9 +1289,9 @@ equivalent in the same manner that, if fed with any string $z$, both or none
 of them transition to accept states.
 
 For example, consider the language $\{s \in \Sigma^\ast \mid \text{s ends
-with "bbb"}\}$. For this language, "b" and "bb" are not equivalent, since
-after appending $z =$ "b" to them, the first reaches a nonaccept state
-and the second reaches an accept state. "abb" and "abbabb" are equivalent.
+with ``bbb''}\}$. For this language, ``b'' and ``bb'' are not equivalent, since
+after appending $z = \mathrm{b}$ to them, the first reaches a nonaccept state
+and the second reaches an accept state. ``abb'' and ``abbabb'' are equivalent.
 
 The new partition we want to establish is that of classes of equivalent
 strings with respect to $L(M)$. It is finer than the first partition,
@@ -1337,8 +1337,8 @@ state for them. That need infinitely many states in a DFA. Thus
 impossible.
 \end{proof}
 
-For example, consider the language $L = \{a^nb^n \mid n \in \mathbb{N}\}$.
-For $L$, all strings $a^n$ where $n \in \mathbb{N}$ is distinguishable
+For example, consider the language $L = \{\mathrm{a}^n\mathrm{b}^n \mid n \in \mathbb{N}\}$.
+For $L$, all strings $\mathrm{a}^n$ where $n \in \mathbb{N}$ is distinguishable
 pairwisely. That is to say that there are infinitely many equivalence
 classes respect to $\equiv_L$, so $L$ is not a regular language.
 
@@ -1379,25 +1379,25 @@ $\forall s \in L$, $|s| \geq p$, \\
 \indent\indent $\forall i \geq 0$, $xy^iz \in L$.
 \end{theorem}
 
-For example, consider the language $L = \{a^nb^n \mid n \in \mathbb{N}\}$.
+For example, consider the language $L = \{\mathrm{a}^n\mathrm{b}^n \mid n \in \mathbb{N}\}$.
 Assume $L$ is a regular language. For a number $p$ guaranteed by the Pumping
-Lemma, consider a string $a^pb^p$. There must be a nonempty substring $y$ in
+Lemma, consider a string $\mathrm{a}^p\mathrm{b}^p$. There must be a nonempty substring $y$ in
 it, where we can pump it up or down and the resultant strings are still in
 $L$. There are three possible cases:
 \begin{enumerate}
-\item $y = a^i$ where $i \leq p$.
-\item $y = a^ib^j$ where $i, j \leq p$
-\item $y = b^j$ where $j \leq p$
+\item $y = \mathrm{a}^i$ where $i \leq p$.
+\item $y = \mathrm{a}^i\mathrm{b}^j$ where $i, j \leq p$
+\item $y = \mathrm{b}^j$ where $j \leq p$
 \end{enumerate}
 
 In any of these cases, either we pump up or pump down $y$ would cause a
-mismatch between the count of "a"s and the count of "b"s in the resultant
+mismatch between the count of ``a''s and the count of ``b''s in the resultant
 string. This contradicts with Pumping Lemma. Thus $L$ is not a regular
 language.
 
 Actually, Pumping Lemma gives us a tighter condition about where $y$ could
 be located within the string. In the example above, we are working on a
-string $a^pb^p$ whose length is twice as the $p$ guaranteed by Pumping
+string $\mathrm{a}^p\mathrm{b}^p$ whose length is twice as the $p$ guaranteed by Pumping
 Lemma. There must be \emph{a} $y$ within the first $p$ characters. And we
 could just drop the last two cases and the analysis would be simpler.
 
@@ -1406,7 +1406,7 @@ could just drop the last two cases and the analysis would be simpler.
 Let us move on to another system to specify a language. We show an example
 here:
 \begin{align*}
-&S \rightarrow aSb \\
+&S \rightarrow \mathrm{a}S\mathrm{b} \\
 &S \rightarrow \epsilon
 \end{align*}
 
@@ -1420,7 +1420,8 @@ line is also called a \emph{derivation}.
 
 \begin{equation*}
 \centering
-S \rightarrow aSb \rightarrow aaSbb \rightarrow aa \epsilon bb \rightarrow aabb
+S \rightarrow \mathrm{a}S\mathrm{b} \rightarrow \mathrm{aa}S\mathrm{bb} \rightarrow
+\mathrm{aa} \epsilon \mathrm{bb} \rightarrow \mathrm{aabb}
 \end{equation*}
 
 To derive a string from a rule, we start from the \emph{starting point},
@@ -1429,7 +1430,7 @@ on the left hand side, substitute $S$ with the right hand side of the
 production. We can repeat this substitution indefinitely until there is no
 nonterminals left. Then we get a string from it.
 
-The example above represents the language $\{a^nb^n \mid n \in \mathbb{N}\}$.
+The example above represents the language $\{\mathrm{a}^n\mathrm{b}^n \mid n \in \mathbb{N}\}$.
 This language was proven nonregular by us in many ways. We are now entering
 the new realm of nonregular languages.
 
@@ -1440,40 +1441,40 @@ the new realm of nonregular languages.
 Consider the example:
 
 \begin{align*}
-&S \rightarrow aAbB \\
-&A \rightarrow \epsilon | aA \\
-&B \rightarrow \epsilon | bB
+&S \rightarrow \mathrm{a}A\mathrm{b}B \\
+&A \rightarrow \epsilon | \mathrm{a}A \\
+&B \rightarrow \epsilon | \mathrm{b}B
 \end{align*}
 
-There are two ways to derive the string $aabb$ from these rules:
+There are two ways to derive the string aabb from these rules:
 
 \begin{enumerate}
-\item $S \rightarrow aAbB \rightarrow aaAbB \rightarrow aabB \rightarrow aabbB \rightarrow aabb$
-\item $S \rightarrow aAbB \rightarrow aAbbB \rightarrow aAbb \rightarrow aaAbb \rightarrow aabb$
+\item $S \rightarrow \mathrm{a}A\mathrm{b}B \rightarrow \mathrm{aa}A\mathrm{b}B \rightarrow \mathrm{aab}B \rightarrow \mathrm{aabb}B \rightarrow \mathrm{aabb}$
+\item $S \rightarrow \mathrm{a}A\mathrm{b}B \rightarrow \mathrm{a}A\mathrm{b}\mathrm{b}B \rightarrow \mathrm{a}A\mathrm{bb} \rightarrow \mathrm{aa}A\mathrm{bb} \rightarrow \mathrm{aabb}$
 \end{enumerate}
 
 In the first way, we always expand the leftmost variable first. While in the second way, we always
-expand the rightmost variable first. Note that those are not only ways to derive $aabb$. But since
+expand the rightmost variable first. Note that those are not only ways to derive aabb. But since
 they are special, we give them names \emph{leftmost derivation} and \emph{rightmost derivation}.
 
-Alternatively, we can draw a \emph{parse tree} of $aabb$. Though there are multiple possible
-derivations, there is only one parse tree for $aabb$.
+Alternatively, we can draw a \emph{parse tree} of aabb. Though there are multiple possible
+derivations, there is only one parse tree for aabb.
 
 \begin{figure}[ht]
 
 \Tree
-[.S
+[.$S$
   [.a ]
-  [.A
+  [.$A$
     [.a ]
-    [.A
+    [.$A$
       [.$\epsilon$ ]
     ]
   ]
   [.b ]
-  [.B
+  [.$B$
     [.b ]
-    [.B
+    [.$B$
       [.$\epsilon$ ]
     ]
   ]
@@ -1487,28 +1488,28 @@ Unfortunately, this is not always the case. It is possible that there are multip
 parse trees for a string. For example consider this CFG:
 
 \begin{align*}
-&S \rightarrow aAb \\
-&A \rightarrow aA|ab|b
+&S \rightarrow \mathrm{a}A\mathrm{b} \\
+&A \rightarrow \mathrm{a}A|\mathrm{ab}|\mathrm{b}
 \end{align*}
 
-And for the string $aabb$, there can be two distinct parse trees for it:
+And for the string aabb, there can be two distinct parse trees for it:
 
 \begin{figure}[ht]
 
 \Tree
-[.S
+[.$S$
   [.a ]
-  [.A
+  [.$A$
     [.ab ]
   ]
   [.b ]
 ]
 \Tree
-[.S
+[.$S$
   [.a ]
-  [.A
+  [.$A$
     [.a ]
-    [.A
+    [.$A$
       [.b ]
     ]
   ]
@@ -1586,7 +1587,7 @@ A \emph{pushdown automaton}, $M$, is a tuple $(Q,\Sigma,\Gamma,\delta,q_0,F)$ wh
 \item $\Sigma$ is the input alphabet
 \item $\Gamma$ is the stack alphabet
 \item
-$\delta : Q \times \Sigma_{\epsilon} \times \Gamma_{\epsilon} \mapsto \mathcal{P}(Q \times \Gamma)$
+$\delta : Q \times \Sigma_{\epsilon} \times \Gamma_{\epsilon} \rightarrow \mathcal{P}(Q \times \Gamma)$
 is the transition function
 \item $q_0 \in Q$ is the start state
 \item $F \subseteq Q$ is the set of the accept states
@@ -1605,7 +1606,7 @@ $\delta$. Just like DFAs/NFAs, it reads the input string from left to right and 
 backward. The key difference with DFA/NFA is that there is a stack of infinite capacity. Without
 it a PDA would be nothing but a DFA/NFA.
 
-More formally, for a PDA $M$, a \emph{configuration} of $M$ is a tuple $(q,string,stack)$. Assume
+More formally, for a PDA $M$, a \emph{configuration} of $M$ is a tuple $(q,\mathrm{string},\mathrm{stack})$. Assume
 the current configuration of $M$ is $(q,w \cdot w_{\text{rest}},s \cdot s_{\text{rest}})$. On
 reading an input symbol $w$, if there is a $(q',s') \in \delta(q,w,s)$, $M$ transitions to the
 new configuration $(q',w_{\text{rest}},s' \cdot s_{\text{rest}})$. There may be many pairs
@@ -1633,7 +1634,7 @@ Suppose $L = L(G)$ for some CFG $G$. To build a PDA $M$ accepting $L$:
 \begin{enumerate}
 
 \item We must be able to test if the stack is empty. The way to do it is that we put a
-special purpose symbol, say $\$$, right after the PDA starts. That is $\delta(q_0,\epsilon,\epsilon) = \{(q_1,\$)\}$.
+special purpose symbol, say \$, right after the PDA starts. That is $\delta(q_0,\epsilon,\epsilon) = \{(q_1,\mathrm{\$})\}$.
 
 \item Then, we put the start variable of $G$, $S$. That is
 $\delta(q_1,\epsilon,\epsilon) = \{(q_2,S)\}$.
@@ -1646,7 +1647,7 @@ rule.
 to $a$. If they match, transition to the next configuration following $\delta$. If not, terminate
 this branch of computation.
 
-\item If the top of the stack is the marker $\$$, transition to the accept state.
+\item If the top of the stack is the marker \$, transition to the accept state.
 
 \item Repeat step 3-5 until all branches of the computations of $M$ are terminated or the input
 string is exhausted.
@@ -1658,15 +1659,14 @@ string is exhausted.
 \subsection{Chomsky Normal Form}
 
 CFGs can be messy. For example, consider the grammar shown below:
-
 \begin{align*}
 &S_0 \rightarrow S|X|Z \\
 &S \rightarrow A \\
 &A \rightarrow B \\
 &B \rightarrow C \\
-&C \rightarrow Aa \\
+&C \rightarrow A\mathrm{a} \\
 &X \rightarrow C \\
-&Y \rightarrow aY|a \\
+&Y \rightarrow \mathrm{a}Y|\mathrm{a} \\
 &Z \rightarrow \epsilon
 \end{align*}
 
@@ -1768,7 +1768,7 @@ A Turing machine, $M$, is a tuple $(Q,\Sigma,\Gamma,\delta,q_0,q_a,q_r)$ where
 \item $\Sigma$ is the input alphabet not containing the \emph{blank symbol \textvisiblespace}
 \item $\Gamma$ is the tape alphabet, where $\text{\textvisiblespace} \in \Gamma$ and $\Sigma
 \subseteq \Gamma$
-\item $\delta : Q \times \Gamma \mapsto Q \times \Gamma \times \{L,R\}$ is the transition function
+\item $\delta : Q \times \Gamma \rightarrow Q \times \Gamma \times \{L,R\}$ is the transition function
 \item $q_0 \in Q$ is the start state
 \item $q_a \in Q$ is the accept state
 \item $q_r \in Q$ is the reject state, where $q_a \neq q_r$
@@ -1833,7 +1833,7 @@ Turing machine, the head could just stay put rather than moving to the left or r
 A \emph{multitape Turing machine} is like an ordinary Turing machine with several tapes. Each tape
 has its own head for reading and writing. The transition function is like
 \[
-  \delta: Q \times \Gamma^k \mapsto Q \times \Gamma^k \times \{L,R,S\}^k
+  \delta: Q \times \Gamma^k \rightarrow Q \times \Gamma^k \times \{L,R,S\}^k.
 \]
 
 \subsection{Nondeterministic Turing Machines}
@@ -1842,7 +1842,7 @@ As we did for finite automata and pushdown automata, Turing machines can also be
 nondeterministic behaviours. To be specific, the transition function of a nondeterministic Turing
 machine is like
 \[
-  \delta: Q \times \Gamma \mapsto \mathcal{P}(Q \times \Gamma \times \{L,R\})
+  \delta: Q \times \Gamma \rightarrow \mathcal{P}(Q \times \Gamma \times \{L,R\}).
 \]
 
 \subsection{Church-Turing Thesis}
@@ -1869,7 +1869,7 @@ Let us begin with a simple decidable problem. For a DFA $D$ and a string $w$, is
 machine deciding whether $D$ accepts $w$?
 
 \begin{theorem}
-Let $A_{DFA} = \{\langle D,w \rangle \mid D \text{ is a DFA that accepts } w\}$. $A_{DFA}$ is
+Let $A_{\mathrm{DFA}} = \{\langle D,w \rangle \mid D \text{ is a DFA that accepts } w\}$. $A_{\mathrm{DFA}}$ is
 decidable.
 \end{theorem}
 
@@ -1882,13 +1882,13 @@ $M$ is a decider.
 And with no surprise, there is also a Turing machine which is a decider for CFGs:
 
 \begin{theorem}
-let $A_{CFG} = \{\langle G \rangle \mid G \text{ is a context free grammar that generates } w\}$.
-$A_{CFG}$ is decidable.
+let $A_{\mathrm{CFG}} = \{\langle G \rangle \mid G \text{ is a context free grammar that generates } w\}$.
+$A_{\mathrm{CFG}}$ is decidable.
 \end{theorem}
 
 \begin{theorem}
-Let $A_{TM} = \{\langle M,w \rangle \mid M \text{ is a Turing machine and } M \text{ accepts } w\}$.
-$A_{TM}$ is undecidable.
+Let $A_{\mathrm{TM}} = \{\langle M,w \rangle \mid M \text{ is a Turing machine and } M \text{ accepts } w\}$.
+$A_{\mathrm{TM}}$ is undecidable.
 \end{theorem}
 
 \section{Reducibility}
@@ -1947,25 +1947,25 @@ simpler problem, then surely we cannot solve the harder one.
 
 Consider this language
 \[
-  BTHP = \{\langle M \rangle \mid M \text{ is a TM and } M \text{ halts on blank tape}\}
+  \mathrm{BTHP} = \{\langle M \rangle \mid M \text{ is a TM and } M \text{ halts on blank tape}\}.
 \]
 
-We claim that this $BTHP$ is undecidable. First, we note that $BTHP$ is Turing-recognizable. For a
-TM $M_{BTHP}$, it simulates the input TM $M$ on a blank tape and see if it halts. $M_{BTHP}$ accepts
-if $M$ halts. So to show that $BTHP$ is undecidable, we need to show that it is not
+We claim that this BTHP is undecidable. First, we note that BTHP is Turing-recognizable. For a
+TM $M_{\mathrm{BTHP}}$, it simulates the input TM $M$ on a blank tape and see if it halts. $M_{\mathrm{BTHP}}$ accepts
+if $M$ halts. So to show that BTHP is undecidable, we need to show that it is not
 co-Turing-recognizable. By corollary \ref{corollary:43}, if we can find a language $A$ that is not
-co-Turing-recognizable and find a many-one reduction from $A$ to $BTHP$, then we would have shown
-that $BTHP$ is not co-Turing-recognizable.
+co-Turing-recognizable and find a many-one reduction from $A$ to BTHP, then we would have shown
+that BTHP is not co-Turing-recognizable.
 
-Since $A_{TM}$ is Turing-recognizable and undecidable, it is not co-Turing-recognizable. Let us try
-to see if we can many-one reduce $A_{TM}$ to $BTHP$. $M_{TM}$ is such a TM that
+Since $A_{\mathrm{TM}}$ is Turing-recognizable and undecidable, it is not co-Turing-recognizable. Let us try
+to see if we can many-one reduce $A_{\mathrm{TM}}$ to BTHP. $M_{\mathrm{TM}}$ is such a TM that
 \begin{itemize}
 \item accepts if $M$ accepts $w$
 \item rejects if $M$ rejects $w$
 \end{itemize}
 
-Can we build a TM $M_{BTHP}$ that helps us to compute $M_{TM}$? That is to say that, can we build
-such a machine $M_{BTHP}$ that accepts if $M'$ halts on the blank tape, and $M'$ has the following
+Can we build a TM $M_{\mathrm{BTHP}}$ that helps us to compute $M_{\mathrm{TM}}$? That is to say that, can we build
+such a machine $M_{\mathrm{BTHP}}$ that accepts if $M'$ halts on the blank tape, and $M'$ has the following
 properties:
 \begin{itemize}
 \item $M'$ halts on the blank tape if $M$ accepts $w$
@@ -1978,26 +1978,26 @@ not use $k$ at all. So $M'$ accepts whatever $k$, including the blank tape, if $
 $M'$ loops if $M$ rejects $w$. Although there is no way for $M'$ to test if $M$ loops on $w$, if
 $M$ does loop on $w$, $M'$ loops as well. So this construction of $M'$ works.
 
-Since we can many-one reduce $A_{TM}$ to $BTHP$, by corollary \ref{corollary:43}, we know that
-$BTHP$ is not co-Turing-recognizable. Combined with the fact that $BTHP$ is Turing-recognizable,
-we know that $BTHP$ is undecidable.
+Since we can many-one reduce $A_{\mathrm{TM}}$ to BTHP, by corollary \ref{corollary:43}, we know that
+BTHP is not co-Turing-recognizable. Combined with the fact that BTHP is Turing-recognizable,
+we know that BTHP is undecidable.
 
 \subsection{An Example: FINITE}
 
 Consider this language
 \[
-  FINITE = \{\langle M \rangle \mid M \text{ is a TM and } L(M) \text{ is finite}\}
+  \mathrm{FINITE} = \{\langle M \rangle \mid M \text{ is a TM and } L(M) \text{ is finite}\}.
 \]
 
-It seems that $FINITE$ is neither Turing-recognizable nor co-Turing-recognizable. To show that it is
-not Turing-recognizable, we need to find a many-one reduction from $\bar{A}_{TM}$ to it. To show
-that it is not co-Turing-recognizable, we need to find a many-one reduction from $A_{TM}$ to it.
+It seems that FINITE is neither Turing-recognizable nor co-Turing-recognizable. To show that it is
+not Turing-recognizable, we need to find a many-one reduction from $\overline{A_{\mathrm{TM}}}$ to it. To show
+that it is not co-Turing-recognizable, we need to find a many-one reduction from $A_{\mathrm{TM}}$ to it.
 
 \subsubsection{First Part: Non-Turing-Recognizable}
 
-Let us show that $\bar{A}_{TM}$ many-one reduces to $FINITE$. To be specific, we want to build a TM
-$M_{FINITE}$ that helps us to compute $\bar{M}_{TM}$. That is to say that, we want to build a
-machine $M_{FINITE}$ that accepts if $L(M')$ is finite and $M'$ has the following properties
+Let us show that $\overline{A_{\mathrm{TM}}}$ many-one reduces to FINITE. To be specific, we want to build a TM
+$M_{\mathrm{FINITE}}$ that helps us to compute $\overline{M_{\mathrm{TM}}}$. That is to say that, we want to build a
+machine $M_{\mathrm{FINITE}}$ that accepts if $L(M')$ is finite and $M'$ has the following properties
 \begin{itemize}
 \item $L(M')$ is finite if $M$ does not accept $w$
 \item $L(M')$ is infinite if $M$ accepts $w$
@@ -2010,7 +2010,7 @@ in this case, it does not accept any string and thus $L(M) = \emptyset$.
 
 \subsubsection{Second Part: Non-Co-Turing-Recognizable}
 
-Let us show that $A_{TM}$ many-one reduces to $FINITE$. This time we want $M'$ to have the following
+Let us show that $A_{\mathrm{TM}}$ many-one reduces to FINITE. This time we want $M'$ to have the following
 properties:
 \begin{itemize}
 \item $L(M')$ is finite if $M$ accepts $w$
@@ -2056,8 +2056,8 @@ We claim that $L$ is neither Turing-recognizable nor co-Turing-recognizable. Let
 
 \subsubsection{First Part: Non-Co-Turing-Recognizable}
 
-Let us show that $A_{TM}$ many-one reduces to $L$. We want to build a TM $M_L$ that helps us to
-compute $A_{TM}$. That is to say, $M_L$ accepts if $L(M')$ is a CFL and $M'$ has the following
+Let us show that $A_{\mathrm{TM}}$ many-one reduces to $L$. We want to build a TM $M_L$ that helps us to
+compute $A_{\mathrm{TM}}$. That is to say, $M_L$ accepts if $L(M')$ is a CFL and $M'$ has the following
 properties:
 \begin{itemize}
 \item $L$ is a CFL if $M$ accepts $w$
@@ -2065,7 +2065,7 @@ properties:
 \end{itemize}
 
 There is a way to build $M'$ out from $M$ and $w$. First, fix a non-CF language such as
-$N = \{a^nb^nc^n \mid n \in \mathbb{N}\}$. Then, we can build $M'$ such that
+$N = \{\mathrm{a}^n\mathrm{b}^n\mathrm{c}^n \mid n \in \mathbb{N}\}$. Then, we can build $M'$ such that
 \begin{itemize}
 \item for any input $x$, accept if $x \in N$
 \item run $M$ on $w$, accept if $M$ accepts $w$
@@ -2080,7 +2080,7 @@ accepted. Eventually $M'$ accepts only the initially accepted non-CF language.
 
 \subsubsection{Second Part: Non-Turing-Recognizable}
 
-Let us show that $\bar{A}_{TM}$ many-one reduces to $L$. That is to say we want to build $M'$ such
+Let us show that $\overline{A_{\mathrm{TM}}}$ many-one reduces to $L$. That is to say we want to build $M'$ such
 that
 \begin{itemize}
 \item $L$ is a CFL if $M$ does not accept $w$
@@ -2089,7 +2089,7 @@ that
 
 There is a way to build $M'$ out from $M$ and $w$. For any input $x$
 \begin{itemize}
-\item accept if $M$ accepts $w$ and $x \in \{a^nb^nc^n \mid n \in \mathbb{N}\}$
+\item accept if $M$ accepts $w$ and $x \in \{\mathrm{a}^n\mathrm{b}^n\mathrm{c}^n \mid n \in \mathbb{N}\}$
 \item reject if $M$ rejects
 \end{itemize}
 
@@ -2107,29 +2107,29 @@ undecidable.
 
 \begin{definition}
 Let $M$ be a deterministic Turing machine that halts on all inputs. The \emph{running time} or
-\emph{time complexity} is the function $f: \mathbb{N} \mapsto \mathbb{N}$, where $f(n)$ is the
+\emph{time complexity} is the function $f: \mathbb{N} \rightarrow \mathbb{N}$, where $f(n)$ is the
 maximum number of steps that $M$ uses on any input of length $n$.
 \end{definition}
 
 \begin{definition}
-Let $t: \mathbb{N} \mapsto \mathbb{R}^+$ be a function. Define the \emph{time complexity class},
-$TIME(t(n))$, to be the collection of all languages that are decidable by an $O(t(n))$ time Turing
+Let $t: \mathbb{N} \rightarrow \mathbb{R}^+$ be a function. Define the \emph{time complexity class},
+$\mathrm{TIME}(t(n))$, to be the collection of all languages that are decidable by an $O(t(n))$ time Turing
 machine.
 \end{definition}
 
 \begin{definition}
 Let $N$ be a nondeterministic Turing machine that is a decider. The \emph{running time} of $N$ is
-is the function $f: \mathbb{N} \mapsto \mathbb{N}$, where $f(n)$ is the maximum number of steps
+is the function $f: \mathbb{N} \rightarrow \mathbb{N}$, where $f(n)$ is the maximum number of steps
 that $N$ uses on any branch of its computation on any input of length $n$.
 \end{definition}
 
 \subsection{The Class P}
 
 \begin{definition}
-\textbf{P} is the class of languages that are decidable in polynomial time on a deterministic
+\emph{P} is the class of languages that are decidable in polynomial time on a deterministic
 single-tape Turing machine. In other words,
 \[
-  P = \bigcup_k TIME(n^k).
+  \mathrm{P} = \bigcup_k \mathrm{TIME}(n^k).
 \]
 \end{definition}
 
@@ -2146,7 +2146,7 @@ verifiable} if it has a polynomial time verfier.
 \end{definition}
 
 \begin{definition}
-The class \textbf{NP} is the class of languages that have polynomial time verifiers.
+The class \emph{NP} is the class of languages that have polynomial time verifiers.
 \end{definition}
 
 \begin{definition}
@@ -2155,18 +2155,18 @@ O(t(n)) \text{ time nondeterministic Turing machine}\}$.
 \end{definition}
 
 \begin{corollary}
-$\textbf{NP} = \bigcup_k \mathrm{NTIME}(n^k)$.
+$\mathrm{NP} = \bigcup_k \mathrm{NTIME}(n^k)$.
 \end{corollary}
 
 \subsection{N Versus NP}
 
-The question of whether $P = NP$ is one of the greatest unsolved problems in the theoretical
+The question of whether $\mathrm{P} = \mathrm{NP}$ is one of the greatest unsolved problems in the theoretical
 computer science and contemporary mathematics.
 
 \subsection{NP Completeness}
 
 \begin{definition}
-A function $f: \Sigma^\ast \mapsto \Sigma^\ast$ is a \emph{polynomial time computable function} if
+A function $f: \Sigma^\ast \rightarrow \Sigma^\ast$ is a \emph{polynomial time computable function} if
 some polynomial time Turing machine exists that halts with just $f(w)$ on the tape, when started
 with any input $w$.
 \end{definition}

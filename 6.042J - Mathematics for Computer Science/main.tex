@@ -7,6 +7,7 @@
 \newcommand{\Zs}{\mathbb{Z}^\ast}
 \newcommand{\Dotn}{\cdot_n}
 \newcommand{\Inzns}{\;\;(\Zn)}
+\newcommand{\rem}{\mathrm{rem}}
 
 \title{6.042J - Mathematics for Computer Science}
 \author{CptBreeza}
@@ -111,7 +112,7 @@ Then $P(m)$ is true for all natural numbers.
 
 \subsubsection{Examples}
 
-Prove that for any natural number $n$, $\Sigma_{i=1}^n i = \frac{n(n+1)}{2}$.
+Prove that for any natural number $n$, $\sum_{i=1}^n i = \frac{n(n+1)}{2}$.
 
 \begin{proof}
 We prove it by induction on $n$.
@@ -120,18 +121,18 @@ We prove it by induction on $n$.
 hand side, so it is equal to $0$. The right hand side also gives a $0$. So the formula
 holds.
 
-\textbf{Inductive case:} We \emph{assume} that $\Sigma_{i=1}^n i = \frac{n(n+1)}{2}$ and we
-want to \emph{prove} that $\Sigma_{i=1}^{n+1} i = \frac{(n+1)(n+2)}{2}$.
+\textbf{Inductive case:} We \emph{assume} that $\sum_{i=1}^n i = \frac{n(n+1)}{2}$ and we
+want to \emph{prove} that $\sum_{i=1}^{n+1} i = \frac{(n+1)(n+2)}{2}$.
 
 We expand the left hand side of the equation that we want to prove and apply the induction
 hypothesis
 \begin{align*}
-\Sigma_{i=1}^{n+1} i &= (\Sigma_{i=1}^n i) + (n+1) \\
+\sum_{i=1}^{n+1} i &= (\sum_{i=1}^n i) + (n+1) \\
 &= \frac{n(n+1)}{2} + (n+1) \\
 &= \frac{n(n+1)+2(n+1)}{2} \\
 &= \frac{(n+1)(n+2)}{2}
 \end{align*}
-and finally established that $\Sigma_{i=1}^{n+1} i = \frac{(n+1)(n+2)}{2}$.
+and finally established that $\sum_{i=1}^{n+1} i = \frac{(n+1)(n+2)}{2}$.
 
 \end{proof}
 
@@ -211,7 +212,7 @@ $r' < d$.
 \subsection{Greatest Common Divisor}
 
 \begin{lemma} \label{lemma:6}
-For $b \neq 0$, $gcd(a,b) = gcd(b,rem(a,b))$.
+For $b \neq 0$, $\gcd(a,b) = \gcd(b,\rem(a,b))$.
 \end{lemma}
 
 \begin{proof}
@@ -238,7 +239,7 @@ If $p$ is a prime and $p|ab$, then $p|a$ or $p|b$.
 
 \begin{proof}
 If $p$ divides $a$, we are done. Then the other case is that $p$ does not divide $a$. That
-is to say, $gcd(a,p)=1$ and we have $sa+tp=1$. We multiply both sides by $b$ and get
+is to say, $\gcd(a,p)=1$ and we have $sa+tp=1$. We multiply both sides by $b$ and get
 $sab+tpb=b$. $p|sab$ since $p|ab$ and $p|tbp$, which implies $p|b$.
 \end{proof}
 
@@ -297,7 +298,7 @@ $$
 \end{definition}
 
 \begin{lemma} \label{lemma:12}
-$a \equiv b \pmod{n}$ iff $rem(a, n) = rem(b,n)$.
+$a \equiv b \pmod{n}$ iff $\rem(a, n) = \rem(b,n)$.
 \end{lemma}
 
 \begin{proof}
@@ -327,19 +328,19 @@ a \equiv b \text{ IFF } b &\equiv a \pmod{n} \tag{symmetry} \\
 
 \begin{proof}
 These properties can easily be proved using lemma \ref{lemma:12}. \\
-\textbf{reflexivity}: $rem(a,n) = rem(a,n)$. \\
-\textbf{symmetry}: $rem(a,n)=rem(b,n) \Leftrightarrow rem(b,n)=rem(a,n)$. \\
-\textbf{transitivity}: $rem(a,n)=rem(b,n) \wedge rem(b,n)=rem(c,n) \Rightarrow rem(a,n)=
-rem(c,n)$.
+\textbf{reflexivity}: $\rem(a,n) = \rem(a,n)$. \\
+\textbf{symmetry}: $\rem(a,n)=\rem(b,n) \Leftrightarrow \rem(b,n)=\rem(a,n)$. \\
+\textbf{transitivity}: $\rem(a,n)=\rem(b,n) \wedge \rem(b,n)=\rem(c,n) \Rightarrow \rem(a,n)=
+\rem(c,n)$.
 \end{proof}
 
 \begin{lemma} \label{lemma:14}
-$a \equiv rem(a,n) \pmod{n}$.
+$a \equiv \rem(a,n) \pmod{n}$.
 \end{lemma}
 
 \begin{proof}
-Let $a = pn + r$ where $0 \leq r < n$, then $a-rem(a,n)=pn+r-r=pn$, which means
-$p|(a-rem(a,n))$.
+Let $a = pn + r$ where $0 \leq r < n$, then $a-\rem(a,n)=pn+r-r=pn$, which means
+$p|(a-\rem(a,n))$.
 \end{proof}
 
 \begin{lemma} \label{lemma:15}
@@ -362,42 +363,42 @@ $p|( (b-a)c + (d-c)b )$, which is $p|(bd-ac)$.
 
 \begin{definition}
 \begin{align*}
-i +_n j &::= rem(i+j, n) \\
-i \cdot_n j &::= rem(ij, n)
+i +_n j &::= \rem(i+j, n) \\
+i \cdot_n j &::= \rem(ij, n)
 \end{align*}
 \end{definition}
 
 \begin{lemma} \label{lemma:17}
-$rem(i+j,n) = rem(i,n) +_n rem(j,n)$.
+$\rem(i+j,n) = \rem(i,n) +_n \rem(j,n)$.
 \end{lemma}
 
 
 \begin{proof}
 Expand $+_n$ on the right hand side shows what we want to prove is:
 \[
-  rem(i+j,n) = rem(rem(i,n)+rem(j,n),n)
+  \rem(i+j,n) = \rem(\rem(i,n)+\rem(j,n),n)
 \]
 
-By lemma \ref{lemma:14}, $i \equiv rem(i,n) \pmod{n}$ and $j \equiv rem(j,n) \pmod{n}$. And
-by lemma \ref{lemma:15}, $i+j \equiv rem(i,n)+rem(j,n) \pmod{n}$. By lemma \ref{lemma:12},
-$i+j \equiv rem(i,n) + rem(j,n) \pmod{n}$ implies that
-$rem(i+j,n) = rem((rem(i,n) + rem(j,n), n)$, which is exactly what we want to prove.
+By lemma \ref{lemma:14}, $i \equiv \rem(i,n) \pmod{n}$ and $j \equiv \rem(j,n) \pmod{n}$. And
+by lemma \ref{lemma:15}, $i+j \equiv \rem(i,n)+\rem(j,n) \pmod{n}$. By lemma \ref{lemma:12},
+$i+j \equiv \rem(i,n) + \rem(j,n) \pmod{n}$ implies that
+$\rem(i+j,n) = \rem((\rem(i,n) + \rem(j,n), n)$, which is exactly what we want to prove.
 \end{proof}
 
 \begin{lemma} \label{lemma:18}
-$rem(ij,n) = rem(i,n) \cdot_n rem(j,n)$.
+$\rem(ij,n) = \rem(i,n) \cdot_n \rem(j,n)$.
 \end{lemma}
 
 \begin{proof}
 Expand $\cdot_n$ on the right hand side shows what we want to prove is:
 \[
-  rem(ij,n) = rem(rem(i,n) \cdot rem(j,n),n)
+  \rem(ij,n) = \rem(\rem(i,n) \cdot \rem(j,n),n)
 \]
 
 By lemma \ref{lemma:14} and lemma \ref{lemma:15}, we have
-$ij = rem(i,n) \cdot rem(j,n) \pmod{n}$. By lemma \ref{lemma:12},
-$ij = rem(i,n) \cdot rem(j,n) \pmod{n}$ implies that
-$rem(ij,n) = rem(rem(i,n) \cdot rem(j,n), n)$, which is exactly what we want to prove.
+$ij = \rem(i,n) \cdot \rem(j,n) \pmod{n}$. By lemma \ref{lemma:12},
+$ij = \rem(i,n) \cdot \rem(j,n) \pmod{n}$ implies that
+$\rem(ij,n) = \rem(\rem(i,n) \cdot \rem(j,n), n)$, which is exactly what we want to prove.
 \end{proof}
 
 The set of integers in the range $[0, n)$ together with the operations $+_n$ and $\cdot_n$
@@ -416,14 +417,14 @@ If $k \in [0, n)$ is relatively prime to $n$, then $k$ has an inverse in $\mathb
 \end{lemma}
 
 \begin{proof}
-If $k$ is relatively prime to $n$, by definition $gcd(n,k) = 1$. By theorem
+If $k$ is relatively prime to $n$, by definition $\gcd(n,k) = 1$. By theorem
 \ref{theorem:7}, there is a linear combination $sn+tk=1$. By lemma \ref{lemma:17} and lemma
 \ref{lemma:18} we get
 \begin{align*}
-  (rem(s,n) \cdot rem(n,n)) + (rem(t,n) \cdot rem(k,n)) &= 1 \;\;(\mathbb{Z}_n) \\
-  rem(t,n) \cdot k &= 1 \;\;(\mathbb{Z}_n)
+  (\rem(s,n) \cdot \rem(n,n)) + (\rem(t,n) \cdot \rem(k,n)) &= 1 \;\;(\mathbb{Z}_n) \\
+  \rem(t,n) \cdot k &= 1 \;\;(\mathbb{Z}_n)
 \end{align*}
-So we have $rem(t,n)$ as a multiplicative inverse of $k$.
+So we have $\rem(t,n)$ as a multiplicative inverse of $k$.
 \end{proof}
 
 \begin{lemma}
@@ -478,9 +479,9 @@ If $j,k \in \Zns$, then $j \cdot_n k \in \Zns$.
 
 \begin{proof}
 Since $j$ shares no common divisor with $n$ and $k$ shares no common divisor with $n$, $jk$
-also shares no common divisor with $n$. That is to say, $gcd(jk,n)=1$. By Lemma
-\ref{lemma:6} we have $gcd(jk,n) = gcd(n,rem(jk,n))=1$, which implies $rem(jk,n)$ is
-relatively prime to $n$. Since $rem(jk,n) = j \cdot_n k$ and it is relatively prime to n,
+also shares no common divisor with $n$. That is to say, $\gcd(jk,n)=1$. By Lemma
+\ref{lemma:6} we have $\gcd(jk,n) = \gcd(n,\rem(jk,n))=1$, which implies $\rem(jk,n)$ is
+relatively prime to $n$. Since $\rem(jk,n) = j \cdot_n k$ and it is relatively prime to n,
 $j \cdot_n k \in \Zns$.
 \end{proof}
 
@@ -582,23 +583,23 @@ divisible by $p$. So $1/p$ of these numbers are not relatively prime to $p$. Tha
 
 \begin{lemma} \label{lemma:33}
 Suppose $a$ and $b$ are relatively prime and greater than $1$. The function $f:[0,ab)
-\mapsto [0,a) \times [0, b)$ defined by
+\rightarrow [0,a) \times [0, b)$ defined by
 \[
-  f(x) ::= (rem(x,a), rem(x,b))
+  f(x) ::= (\rem(x,a), \rem(x,b))
 \]
 is a bijection.
 \end{lemma}
 
 \begin{proof}
 By theorem \ref{theorem:2.8}, distinct $x \in [0, ab)$ maps to distinct $m \in [0,a)$ by
-$rem(x,a)$ maps to distinct $n \in [0,b)$ by $rem(x,b)$.
+$\rem(x,a)$ maps to distinct $n \in [0,b)$ by $\rem(x,b)$.
 \end{proof}
 
 \begin{lemma} \label{lemma:34}
 Suppose $a$ and $b$ are relatively prime and greater than $1$. The function $f:\Zs_{ab}
-\mapsto \Zs_a \times \Zs_b$ defined by
+\rightarrow \Zs_a \times \Zs_b$ defined by
 \[
-  f(x) ::=(rem(x,a),rem(x,b))
+  f(x) ::=(\rem(x,a),\rem(x,b))
 \]
 is a bijection.
 \end{lemma}
@@ -606,8 +607,8 @@ is a bijection.
 \begin{proof}
 An obvious fact is that if $x$ is not relatively prime to $a$, then $x$ is not relatively
 prime to $ab$. The contrapositive of it says that if $x$ is relatively prime to $ab$, then
-$x$ is relatively prime to $x$. So take an element $x$ from $\Zs_{ab}$, $rem(x,a)$ is
-relatively prime to $a$ and $rem(x,b)$ is relatively prime to $b$. So the expression given
+$x$ is relatively prime to $x$. So take an element $x$ from $\Zs_{ab}$, $\rem(x,a)$ is
+relatively prime to $a$ and $\rem(x,b)$ is relatively prime to $b$. So the expression given
 in the lemma does a valid mapping.
 
 And since $\Zs_{ab} \subseteq [0,ab)$, by lemma \ref{lemma:33}, the function defined in the
@@ -660,10 +661,10 @@ Since $a$ and $b$ are relatively prime, $a$ has an inverse in $\mathbb{Z}_b$ and
 inverse in $\mathbb{Z}_a$. We define $e_a ::= b^{-1}b$ and $e_b ::= a^{-1}a$. Let
 $x = me_a + me_b$. We know that
 \begin{align*}
-rem(x,a) &= rem(me_a,a) + rem(me_b,a) \\
-&=rem(m,a)rem(e_a,a) + rem(m,a)rem(e_b,a) \\
-&=rem(m,a)rem(b^{-1}b,a) + rem(m,a)rem(a^{-1}a,a) \\
-&=rem(m,a)
+\rem(x,a) &= \rem(me_a,a) + \rem(me_b,a) \\
+&=\rem(m,a)\rem(e_a,a) + \rem(m,a)\rem(e_b,a) \\
+&=\rem(m,a)\rem(b^{-1}b,a) + \rem(m,a)\rem(a^{-1}a,a) \\
+&=\rem(m,a)
 \end{align*}
 That is to say $x \equiv m \pmod{a}$. And by the same reasoning we can show that
 $x \equiv n \pmod{b}$.
@@ -821,8 +822,8 @@ several days. The following events happen each day:
 \textbf{Morning:} Each boy serenades his favorite girl on the list. If a boy has no girls on his
 list, he stays home and does his math homework.
 
-\textbf{Afternoon:} Each girl who has one or more suitors says to her favorite among them, "we might
-get engaged, come back tomorrow". To other suitors, she says, "I will never marry you".
+\textbf{Afternoon:} Each girl who has one or more suitors says to her favorite among them, ``we might
+get engaged, come back tomorrow''. To other suitors, she says, ``I will never marry you''.
 
 \textbf{Evening:} Any boy who is told by a girl that she will never marry him, crosses that girl from
 his list.
@@ -1005,7 +1006,7 @@ a leaf, we need one extra edge. So there are $n$ edges, which means that $P(n+1)
 \end{proof}
 
 \begin{definition}
-A \emph{spanning tree} (ST) of a connected graph is a subgraph that is a tree with the same vertices
+A \emph{spanning tree (ST)} of a connected graph is a subgraph that is a tree with the same vertices
 as the graph.
 \end{definition}
 
