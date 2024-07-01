@@ -117,11 +117,11 @@ Prove that for any natural number $n$, $\sum_{i=1}^n i = \frac{n(n+1)}{2}$.
 \begin{proof}
 We prove it by induction on $n$.
 
-\textbf{Base case:} $n = 0$. For $n = 0$, there are no terms in the summation on the left
+\begin{description}
+\item[Base case] $n = 0$. For $n = 0$, there are no terms in the summation on the left
 hand side, so it is equal to $0$. The right hand side also gives a $0$. So the formula
 holds.
-
-\textbf{Inductive case:} We \emph{assume} that $\sum_{i=1}^n i = \frac{n(n+1)}{2}$ and we
+\item[Inductive case] We \emph{assume} that $\sum_{i=1}^n i = \frac{n(n+1)}{2}$ and we
 want to \emph{prove} that $\sum_{i=1}^{n+1} i = \frac{(n+1)(n+2)}{2}$.
 
 We expand the left hand side of the equation that we want to prove and apply the induction
@@ -133,7 +133,7 @@ hypothesis
 &= \frac{(n+1)(n+2)}{2}
 \end{align*}
 and finally established that $\sum_{i=1}^{n+1} i = \frac{(n+1)(n+2)}{2}$.
-
+\end{description}
 \end{proof}
 
 \subsection{A Variant of Proof by Induction: Strong Induction}
@@ -193,11 +193,12 @@ We split the proof into two parts. One part on existence and one part on uniquen
 First, we prove that there exists such a pair $q$ and $r$. We prove it by strong induction
 on $n$.
 
-\textbf{Base Case:} If $0 \leq n < d$, $q = 0$ and $r = n$.
-
-\textbf{Inductive Case:} We assume the proposition holds for all integers $[0,n-1]$ and
+\begin{description}
+\item[Base case] If $0 \leq n < d$, $q = 0$ and $r = n$.
+\item[Inductive case] We assume the proposition holds for all integers $[0,n-1]$ and
 $n \geq d$. We need to prove that the proposition holds for $n$. Since $0 \leq n-d < n$,
 by the induction hypothesis, $n-d=qd+r$ and $0 \leq r < d$, we get $n=(q+1)d+r$.
+\end{description}
 
 Then we prove that if there exists two pairs $q,r$ and $q',r'$ such that $n=qd+r=q'd+r'$
 and $0 \leq r,r' < d$, it must be that $q=q'$ and $r=r'$. We prove it by contradiction.
@@ -206,7 +207,6 @@ We assume that $0 \leq r \leq r' < d$. We have $r'-r=kd$ where $k = q'-q$. If $q
 $r'$ must be equal to $r$. If $q' \neq q$, since $r' \geq r$, it must be that $k > 1$.
 But $r' > r'-r=kd$ implies that $r' > kd > d$, which contradicts our assumption that
 $r' < d$.
-
 \end{proof}
 
 \subsection{Greatest Common Divisor}
@@ -305,15 +305,15 @@ $a \equiv b \pmod{n}$ iff $\rem(a, n) = \rem(b,n)$.
 We split the proof into two parts. One part for the if direction and one part for the
 only-if direction.
 
-\textbf{The proof of the if part}: We can write $a = pn + r$ and $b = p'n + r$ where
+\begin{description}
+\item[The proof of the if part] We can write $a = pn + r$ and $b = p'n + r$ where
 $0 \leq r < n$. Subtract these two equations and we get $a - b = (p - p')n$ which means
 that $n|(a-b)$.
-
-\textbf{The proof of the only-if part}: Suppose $a=pn+r$ and $b=p'n+r'$ where
+\item[The proof of the only-if part] Suppose $a=pn+r$ and $b=p'n+r'$ where
 $0 \leq r,r' < n$. Subtract these two equations and we get $a-b=(p-p')n+(r-r')$. Since
 $n|(a-b)$ and $p|(p-p')n$, $n|((a-b)-(p-p')n)$, which is $n|(r-r')$. We known that
 $0 \leq r,r' < n$, so it is only possible that $r-r'=0$ and $r=r'$.
-
+\end{description}
 \end{proof}
 
 \begin{lemma}
@@ -327,11 +327,13 @@ a \equiv b \text{ IFF } b &\equiv a \pmod{n} \tag{symmetry} \\
 \end{lemma}
 
 \begin{proof}
-These properties can easily be proved using lemma \ref{lemma:12}. \\
-\textbf{reflexivity}: $\rem(a,n) = \rem(a,n)$. \\
-\textbf{symmetry}: $\rem(a,n)=\rem(b,n) \Leftrightarrow \rem(b,n)=\rem(a,n)$. \\
-\textbf{transitivity}: $\rem(a,n)=\rem(b,n) \wedge \rem(b,n)=\rem(c,n) \Rightarrow \rem(a,n)=
+These properties can easily be proved using lemma \ref{lemma:12}.
+\begin{description}
+\item[reflexivity] $\rem(a,n) = \rem(a,n)$.
+\item[symmetry] $\rem(a,n)=\rem(b,n) \Leftrightarrow \rem(b,n)=\rem(a,n)$.
+\item[transitivity] $\rem(a,n)=\rem(b,n) \wedge \rem(b,n)=\rem(c,n) \Rightarrow \rem(a,n)=
 \rem(c,n)$.
+\end{description}
 \end{proof}
 
 \begin{lemma} \label{lemma:14}
@@ -766,15 +768,16 @@ colors.
 \begin{proof}
 We prove it by induction on $n$.
 
-\textbf{Base Case:} For $n=1$, there are no edges. In this case $d = 0$ and $d+1=1$, which is
+\begin{description}
+\item[Base case] For $n=1$, there are no edges. In this case $d = 0$ and $d+1=1$, which is
 exactly the number of colors that we need.
-
-\textbf{Inductive Case:} Assume $P(n)$ is true. Let $G=(V,E)$ be any $(n+1)$-node graph. Let $d$ be
+\item[Inductive case] Assume $P(n)$ is true. Let $G=(V,E)$ be any $(n+1)$-node graph. Let $d$ be
 the max degree of $G$. Order the nodes $v_1,v_2,\dots,v_n,v_{n+1}$. We remove $v_{n+1}$ from $G$ to
 create $G'$. Then $G'$ has max degree $\leq d$. By the induction hypothesis, we can color it using
 at most $d+1$ colors. Note that $v_{n+1}$ has at most $d$ neighbors and it takes at most $d$ colors
 to color its neighbors. And we need one extra color for $v_{n+1}$, which implies we can color $G$
 with $d+1$ colors.
+\end{description}
 \end{proof}
 
 \begin{definition}
@@ -819,17 +822,16 @@ boys and girls.
 The procedure for finding a stable matching involves a \emph{Mating Ritual} that takes place over
 several days. The following events happen each day:
 
-\textbf{Morning:} Each boy serenades his favorite girl on the list. If a boy has no girls on his
+\begin{description}
+\item[Morning] Each boy serenades his favorite girl on the list. If a boy has no girls on his
 list, he stays home and does his math homework.
-
-\textbf{Afternoon:} Each girl who has one or more suitors says to her favorite among them, ``we might
+\item[Afternoon] Each girl who has one or more suitors says to her favorite among them, ``we might
 get engaged, come back tomorrow''. To other suitors, she says, ``I will never marry you''.
-
-\textbf{Evening:} Any boy who is told by a girl that she will never marry him, crosses that girl from
+\item[Evening] Any boy who is told by a girl that she will never marry him, crosses that girl from
 his list.
-
-\textbf{Termination:} When a day arrives in which every girl has at most one suitor, the ritual ends
+\item[Termination] When a day arrives in which every girl has at most one suitor, the ritual ends
 with every girl marrying her suitor, if she has one.
+\end{description}
 \end{definition}
 
 \begin{theorem}
@@ -849,14 +851,15 @@ If a girl $G$ ever rejected a boy $B$, then $G$ has a suitor who she prefers to 
 \begin{proof}
 By induction on the number of days.
 
-\textbf{Base case:}  On day $0$, no one got rejected yet.
-
-\textbf{Inductive case:} Assume $P$ holds at end of day $d$. There are two cases:
+\begin{description}
+\item[Base case] On day $0$, no one got rejected yet.
+\item[Inductive case] Assume $P$ holds at end of day $d$. There are two cases:
 \begin{enumerate}
 \item $G$ rejects $B$ at $d+1$. Then there was someone better. That implies $P$ is true for $d+1$.
 \item $G$ rejects $B$ before $d+1$. Since $P$ is true at the end of day $d$, she has the same suitor
 or someone she prefers better at the end of day $d+1$.
 \end{enumerate}
+\end{description}
 \end{proof}
 
 \begin{theorem}
@@ -997,12 +1000,13 @@ A tree with $n$ vertices has $n-1$ edges.
 \begin{proof}
 By induction on $n$.
 
-\textbf{Base case:} For $n=1$, there is no edges in a $1$-node tree.
-
-\textbf{Inductive case:} Assume $P(n)$ holds. Let $T$ be a tree that has $n+1$ vertices. Let $v$ be a
+\begin{description}
+\item[Base case] For $n=1$, there is no edges in a $1$-node tree.
+\item[Inductive case] Assume $P(n)$ holds. Let $T$ be a tree that has $n+1$ vertices. Let $v$ be a
 leaf of the tree. Remove $v$ and we get a connected subgraph of $T$, which is a tree with $n$ nodes.
 By the induction hypothesis this subtree has $n-1$ edges. Re-attach $v$ back to the tree, since it is
 a leaf, we need one extra edge. So there are $n$ edges, which means that $P(n+1)$ is true.
+\end{description}
 \end{proof}
 
 \begin{definition}
@@ -1047,9 +1051,9 @@ Let $S$ consists of the first $m$ edges selected by the algorithm. Then there ex
 \begin{proof}
 By induction on $m$.
 
-\textbf{Base case:} For $m=0$ it is correct.
-
-\textbf{Inductive case:} Suppose $P(m)$ holds. Let $e$ denote the edge added in the $(m+1)$th step.
+\begin{description}
+\item[Base case] For $m=0$ it is correct.
+\item[Inductive case] Suppose $P(m)$ holds. Let $e$ denote the edge added in the $(m+1)$th step.
 Let $S$ denote the first $m$ selected edges. Let $T'=(V,E')$ be the spanning tree guaranteed by the
 induction hypothesis. There are two cases for $e$ and $E'$:
 \begin{enumerate}
@@ -1075,6 +1079,7 @@ $T'$, and thus $T''$ is an MST.
 
 Now we have shown that $T''$ is an MST, and $S \cup \{e\} \subseteq E''$. So $P(m+1)$ holds. Our proof
 by induction is done.
+\end{description}
 \end{proof}
 
 \begin{theorem}
@@ -1104,13 +1109,14 @@ A connected graph has Euler tour iff every vertex of the graph has even degree.
 \end{theorem}
 
 \begin{proof}
-First, let us prove the only if direction. Assume $G=(V,E)$ has an Euler tour. Suppose there is a
+\begin{description}
+\item[The proof of the only-if part] Assume $G=(V,E)$ has an Euler tour. Suppose there is a
 Euler tour starts and finishes at $v_0$. For any vertex $v_k$ in the Euler tour, it may occur
 multiple times. Everytime it occurs, there are two edges incident to it. Since these edges are in
 a Euler tour, they are all different and they are all edges that are incident to $v_k$. So the
 degree of $v_k$ is two times the occurrences of $v_k$, which is an even number.
 
-Then, let us prove the if direction. Assume for $G=(V,E)$, the degree of every vertex if even. Let
+\item[The proof of the if part] Assume for $G=(V,E)$, the degree of every vertex if even. Let
 $w = v_0v_1 \dots v_k$ be the longest walk that traverses no edge more than once. We claim that
 $w$ is an Euler tour.
 
@@ -1127,6 +1133,7 @@ Suppose $w$ is not an Euler tour. $G$ is connected so there exists an edge that 
 incident to some vertex in $w$. Let $u$-$v_i$ be this edge. Then we can build a longer walk
 $uv_iv_{i+1} \dots v_kv_0 \dots v_i$, which contradicts our assumption that $w$ is the longest walk
 of $G$. So $w$ must be an Euler tour.
+\end{description}
 \end{proof}
 
 \begin{theorem}
@@ -1138,11 +1145,12 @@ number of directed walks from $v_i$ to $v_j$ of length $k$. Then $A^k = \{p_{i,j
 By induction on $k$. Assume $a_{i,j}^k$ be the $(i,j)$th element of $A^k$, we want to prove that
 $a_{i,j}^k=p_{i,j}^k$.
 
-\textbf{Base case:} $k=1$. The only walk of length $1$ from $v_i$ to $v_j$ is an edge. If there is
+\begin{description}
+\item[Base case] $k=1$. The only walk of length $1$ from $v_i$ to $v_j$ is an edge. If there is
 an edge, $p_{i,j}^k=1$. If there is no edge, $p_{i,j}^k=0$. In this case, $p_{i,j}^k$ is exactly
 the definition of the adjacent matrix.
 
-\textbf{Inductive case:} Assume $P(m)$. Note that a path from $i$ to $j$ of length $m+1$ can be
+\item[Inductive case] Assume $P(m)$. Note that a path from $i$ to $j$ of length $m+1$ can be
 obtained by attaching one more node $h$ to a path from $i$ to $h$ of length $m$ where there exists
 an edge from $h$ to $j$. And we sum up for all $h$s to get the final result:
 \begin{align*}
@@ -1151,7 +1159,7 @@ p_{i,j}^{k+1} &= \sum_{h\text{ that there exists an edge from }h\text{ to }j} p_
 &= \sum_{h=1}^n a_{ih}^k \cdot a_{hj}
 \end{align*}
 Note that the last summation is exactly the definition of matrix multiplication.
-
+\end{description}
 \end{proof}
 
 \begin{definition}
@@ -1175,9 +1183,9 @@ Every tournament graph contains a directed Hamiltonian path.
 \begin{proof}
 By induction on the number of nodes.
 
-\textbf{Base case:} $n=1$ works.
-
-\textbf{Inductive case:} Assume $P(m)$. Take out one node $v$ and the remaining graph is an
+\begin{description}
+\item[Base case] $n=1$ works.
+\item[Inductive case] Assume $P(m)$. Take out one node $v$ and the remaining graph is an
 $n$-node tournament graph. Let $w=v_0 \dots v_k$ be the directed Hamiltonian path guaranteed by the
 induction hypothesis. There are two cases:
 \begin{itemize}
@@ -1186,6 +1194,7 @@ induction hypothesis. There are two cases:
 and $v_{i-1}$ beats $v$, we can insert $v$ between $v_{i-1}$ and $v_i$ and obtain a directed
 Hamiltonian path.
 \end{itemize}
+\end{description}
 \end{proof}
 
 \subsection{Relations and Partial Orders}
